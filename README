@@ -1,16 +1,27 @@
-******************************************************************************
-*																			 *
-*							  MOSKITO Lite CMS								 *
-*								version 0.1									 *
-*																			 *
-*							author : Jean-Luc Chassaing						 *
-*																			 *
-*								2011/07/10									 *
-*																			 *
-******************************************************************************
+*****************************************************************************
+*  																		    *
+*							  MOSKITO Lite CMS								*
+*								version 0.1									*
+*																			*
+*							author : Jean-Luc Chassaing						*
+*																			*
+*								2011/07/10									*
+*																			*
+*****************************************************************************
 
 
-Introduction
+1/ Introduction
 
 Moskito lite CMS. I no what you guys are going to say. We don't need a new 
-content managment system. Well in fact I think we do. 
+content managment system. Well in fact I think we do.
+
+This is the first release of a bran new CMS.
+
+2 / The requirements
+
+2.1 / Simple
+
+Well this tool has to be simple. A big work will have to be done on the
+back office to make things simple for content editing, creating classes
+and customing content views.
+
