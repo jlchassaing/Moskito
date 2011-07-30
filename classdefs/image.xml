@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Definition>
+<ClassName>Image</ClassName>
+<NamingField>name</NamingField>
+<Fields>
+<Field>
+<Name>Name</Name>
+<Identifier>name</Identifier>
+<DataType>string</DataType>
+<Required>true</Required>
+</Field>
+<Field>
+<Name>Description</Name>
+<Identifier>description</Identifier>
+<DataType>xmlbloc</DataType>
+<Required>false</Required>
+</Field>
+<Field>
+<Name>Image</Name>
+<Identifier>image</Identifier>
+<DataType>image</DataType>
+<Required>false</Required>
+</Field>
+</Fields>
+</Definition>

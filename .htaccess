@@ -1,0 +1,24 @@
+# Copy this file to a new file called .htaccess in your eZ Publish root
+# to make the site more secure in non-virtualhost mode (index.php used in urls).
+#
+
+#php_value allow_call_time_pass_reference 0
+
+#<FilesMatch ".">
+#order allow,deny
+#deny from all
+#</FilesMatch>
+
+#<FilesMatch "(index\.php|\.(gif|jpe?g|png|css|js|html)|var(.+)storage.pdf(.+)\.pdf)$">
+#order allow,deny
+#allow from all
+#</FilesMatch>
+
+
+
+RewriteEngine On
+
+
+RewriteRule !\.(gif|jpe?g|png|css|js|html|htm)|var(.+)storage.pdf(.+)\.pdf$ index.php
+
+DirectoryIndex index.php

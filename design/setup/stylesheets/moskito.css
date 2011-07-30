@@ -1,0 +1,39 @@
+@CHARSET "UTF-8";
+*{font-family:verdana}
+body{background:#3c74b3 url(../images/fond-debleu.png) repeat-x;margin:0}
+div#page{width:100%}
+div#page-content, div#debug{width:950px; margin:10px auto 0;display:block;padding:10px}
+div#page-content{position:relative;z-index:10}
+div#fond {
+  background: url("../images/moskito-front.png") no-repeat scroll left top transparent;
+  bottom: 0;
+  height: 500px;
+  position: absolute;
+  right: 0;
+  width: 700px;
+  z-index: 5;
+}
+div.borderbox .tl{background:transparent url(../images/mbox/mbox-tl.png) no-repeat left top;}
+div.borderbox .tr{background:transparent url(../images/mbox/mbox-tr.png) no-repeat right top;padding:0 10px}
+div.borderbox .tc{background:transparent url(../images/mbox/mbox-tc.png) repeat-x scroll left top; height:12px;font-size:0pt;}
+div.borderbox .ml{background:transparent url(../images/mbox/mbox-cl.png) repeat-y left top;}
+div.borderbox .mr{background:transparent url(../images/mbox/mbox-cr.png) repeat-y right top;padding:0 10px;}
+div.borderbox .mc{background:#fff none repeat-x; }
+div.borderbox .bl{background:transparent url(../images/mbox/mbox-bl.png) no-repeat left top;}
+div.borderbox .br{background:transparent url(../images/mbox/mbox-br.png) no-repeat right top;padding:0 10px}
+div.borderbox .bc{background:transparent url(../images/mbox/mbox-bc.png) repeat-x; height:12px;font-size:0px;}
+
+div.content{padding:5px}
+div.install_menu{float:right;}
+div.install_msg{width:650px}
+pre{background-color:#d8dbde;border:1px solid black;padding:3px;font-family:"monaco" sans-serif;}
+div.install_menu li.current{font-weight:bold}
+div.install_menu li.done{font-weight:bold;color:green}
+
+div.error{color:red}
+
+h1{color:#183152;margin:0}
+div#debug{margin-top:0}
+div#debug table{width:100%}
+th{background-color:#183152;color:#E1E6FA}
+div.progressbar{clear:both}

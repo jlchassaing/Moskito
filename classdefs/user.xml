@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Definition>
+<ClassName>User</ClassName>
+<NamingField>first_name</NamingField>
+<Fields>
+<Field>
+<Name>First name</Name>
+<Identifier>first_name</Identifier>
+<DataType>string</DataType>
+<Required>true</Required>
+</Field>
+<Field>
+<Name>Last name</Name>
+<Identifier>last_name</Identifier>
+<DataType>string</DataType>
+<Required>true</Required>
+</Field>
+</Fields>
+</Definition>
