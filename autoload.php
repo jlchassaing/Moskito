@@ -14,23 +14,15 @@ class Autoloader
 	 */
 	public static function registerAutoloaderFunctions()
 	{
-	    $canLoad = true;
-	    if (!file_exists("var/"))
-	    {
-	        if (!@mkdir("var",0775))
-	        {
-	            $canLoad = false;
-	        }
-	    }
 	    if (is_writable('var/'))
 	    {
 	        spl_autoload_register(array('Autoloader','classLoader'));
+	        return true;
 	    }
 	    else
 	    {
-	        $canLoad =  false;
+	        return false;
 	    }
-	    return $canLoad;
 
 	}
 
