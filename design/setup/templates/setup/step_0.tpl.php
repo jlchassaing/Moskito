@@ -7,7 +7,17 @@
 
 <h2><?php echo $title ?></h2>
 
-<?php if ($message == "not-writable"):?>
+<?php if (!$message['create']):?>
+
+<p>Could not create some directories please make sure that the "var" directory is not missing.</p>
+<p>If so please execute the command below:</p>
+
+<pre>
+mkdir var
+</pre>
+
+<?php endif;?>
+<?php if (!$message['write']):?>
 
 <p>Some directories are not writable by the account running apache.</p>
 

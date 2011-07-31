@@ -99,11 +99,25 @@ class lcSetup
     public function checkdir()
     {
         $title = "Write access";
-        $message = "writable";
+        $message['write'] = true;
         $skip = false;
         $dirForWriteAccess = array('var/','settings/');
         $isWritable = true;
         $i = 0;
+
+        $message['create'] = true;
+
+        foreach ($dirForWriteAccess as $dir)
+        {
+            if (!file_exists($dir))
+            {
+                if (!@mkdir($dir,0775))
+                {
+                    $message['create'] = false;
+                }
+            }
+        }
+
         while($isWritable and $i < count($dirForWriteAccess))
         {
             $isWritable = is_writable($dirForWriteAccess[$i]);
@@ -111,7 +125,7 @@ class lcSetup
         }
         if (!$isWritable)
         {
-            $message = "not-writable";
+            $message['write'] = false;
         }
         else
         {
