@@ -37,7 +37,8 @@ class lcMenu extends lcPersistent
 					 'fields' 	 => array('node_id'  	 	=> array('type' => 'integer'),
 									   	  'parent_node_id'	=> array('type' => 'integer'),
 		                                  'sort_val'		=> array('type' => 'string'),
-									   	  'path_ids'		=> array('type' => 'string')
+									   	  'path_ids'		=> array('type' => 'string'),
+									   	  'section_id'		=> array('type' => 'integer')
         ),
 					 'key' => 'node_id'
 					 );
@@ -180,7 +181,7 @@ class lcMenu extends lcPersistent
 
         // update sort val
 
-         
+
         $this->sort_val = self::getSortVal($newParent);
 
         $this->store();
@@ -205,9 +206,17 @@ class lcMenu extends lcPersistent
             $db->query($query);
         }
         $db->commit();
+    }
 
+    public static function setSection($parentNodeId,$sectionId)
+    {
+        $db = lcDB::getInstance();
 
+        $query = "UPDATE menu SET ".
+				 "section_id = $sectionId  WHERE ".
+				 "path_ids like '%/$parentNodeId/%'";
 
+        $db->query($query);
     }
 
 

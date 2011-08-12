@@ -16,7 +16,7 @@
 <div id="title">
 <h1><a href="<?php $this->url('/back');?>" ><img src="<?php $this->designurl("images/moskito/logo.png");?>" /></a></h1>
 </div>
-
+<div id="topmenu"></div>
 </div>
 <div id="main">
 <?php echo $MainResult;?>

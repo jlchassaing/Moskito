@@ -174,15 +174,13 @@ if ($userLogin)
 	if ($siteSettings->value("User", "login"))
 	{
 
-		$sessionLifeTime = $siteSettings->value('User','sessionlifetime');
-		session_set_cookie_params($sessionLifeTime);
-		session_start();
+		lcSession::start();
 
 		// gestion de la session
 
-		if (!isset($_SESSION['user_id']) AND !$Module->isCurrent("user", "login"))
+		if (!lcSession::hasValue('user_id') AND !$Module->isCurrent("user", "login"))
 		{
-			$_SESSION['last_request'] = $request['fullrequest'];
+			lcSession::setValue('last_request',$request['fullrequest']);
 			$redirectUri = lcHTTPTool::buildUrl("/user/login");
 			lcHTTPTool::redirect($redirectUri);
 		}

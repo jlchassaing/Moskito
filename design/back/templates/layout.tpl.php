@@ -6,6 +6,10 @@
 	<meta name="Content-language" content="fr-FR" />
 	<?php lcStyleLoader::load('litecms.css');?>
 
+	<!--[if lt IE 9]>
+	<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+	<![endif]-->
+
 	<?php lcScriptLoader::load();?>
 
 </head>
@@ -13,12 +17,12 @@
 <div id="page" class="clear">
 <div id="header">
 <div id="title">
-<h1><a href="<?php $this->url('/back');?>" ><img src="<?php $this->designurl("images/moskito.png");?>" /></a></h1>
+<h1><a href="<?php $this->url('/back');?>" ><img src="<?php $this->designurl("images/moskito/logo.png");?>"  alt="Moskito lite CMS"/></a></h1>
 </div>
 <div id="user">
 		<?php $user = lcUser::getCurrentUser()?>
 		<?php if ($user):?>
-		<p>Bonjour <?php echo $user['login'];?>, <a href="<?php $this->url('/user/logout');?>" >se déconnecter</a></p>
+		<p>Bonjour <span class="username"> <?php echo $user['login'];?></span> | paramètres | <a href="<?php $this->url('/user/logout');?>" class="disconnect" >se déconnecter</a></p>
 		<?php endif;?>
 
 </div>

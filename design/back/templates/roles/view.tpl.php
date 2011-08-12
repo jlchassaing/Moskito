@@ -1,4 +1,4 @@
-<h2>Gestion des rôles</h2>
+<h2><a href="<?php $this->url('role/list');?>" >Gestion des rôles</a></h2>
 <h3><?php echo $role->attribute('name')?></h3>
 <?php $rules = $role->attribute('rules');?>
 <form action="<?php $this->url('role/action');?>" method="post" >

@@ -20,6 +20,9 @@ $viewList['manage']= array('script'=>'manage.php',
                            'function' => 'edit');
 $viewList['googlesitemap']= array('script'=>'googlesitemap.php',
                                   'function' => 'read');
+$viewList['select']= array('script'=>'select.php',
+						 'ordered_params'=>array("NodeId"),
+                         'function' => 'select');
 
 $functionList = array();
 $functionList['read'] = array();

@@ -51,7 +51,7 @@ class lcContentMenu extends lcPersistent
 										  'lang'				=> array('type' => 'string')
         ),
 					 'key' => 'id'
-					 );
+        );
     }
 
 
@@ -75,9 +75,9 @@ class lcContentMenu extends lcPersistent
         {
             $lang = "fre-FR";
         }
-        
+
         $node_id = ($node_id === null)?$settings->value('TreeNodes','ContentNode'):$node_id;
-        
+
         $db = lcDB::getInstance();
         $nodeCond = "";
         $firstItem = 1;
@@ -87,22 +87,36 @@ class lcContentMenu extends lcPersistent
             $firstItem = 0;
             $depthCond = "*";
         }
-        
+
         if (isset($node_id))
         {
-            if (!is_null($depth) AND $depth > 0)
+            if ($node_id > 0)
             {
+                if (!is_null($depth))
+                {
+                    if ( $depth > 0)
+                    {
+                        $depthCond = "{".$firstItem.",".$depth."}$";
+                    }
+                    if ($depth == 0)
+                    {
+                        $depthCond = 0;
+                    }
 
-                $depthCond = "{".$firstItem.",".$depth."}$";
+                }
+                $nodeCond = "AND menu.path_ids REGEXP concat((select menu.path_ids from menu where node_id=$node_id),'([0-9]+/)$depthCond') ";
             }
-            $nodeCond = "AND menu.path_ids REGEXP concat((select menu.path_ids from menu where node_id=$node_id),'([0-9]+/)$depthCond') ";
-        }
-       $selectFields = "contentmenu.id, menu.node_id, contentmenu.contentobject_id, contentmenu.name, contentmenu.path_string, contentmenu.lang, ".
-				        " menu.parent_node_id, menu.path_ids, menu.sort_val, contentobject_attributes.txt_value as object_name, contentobjects.created";
+            else
+            {
+                $nodeCond = "AND menu.parent_node_id = $node_id ";
+            }
 
-       /* $selectFields = " menu.node_id, contentmenu.path_string, contentmenu.lang, ".
-				        " menu.parent_node_id, menu.path_ids, contentobject_attributes.txt_value as object_name";*/
-        
+        }
+
+        $selectFields = "contentmenu.id, menu.node_id, (select count(*) from menu as menu2 where menu2.parent_node_id = menu.node_id) as children_count,
+                               contentmenu.contentobject_id, contentmenu.name, contentmenu.path_string, contentmenu.lang, ".
+       				        " menu.parent_node_id, menu.path_ids, menu.sort_val, contentobject_attributes.txt_value as object_name, contentobjects.created";
+
         $query = "SELECT $selectFields FROM contentmenu,contentobjects, menu, contentobject_attributes ".
 				 "WHERE contentmenu.node_id = menu.node_id ".
 			     "AND contentmenu.lang = '$lang' ".
@@ -122,7 +136,7 @@ class lcContentMenu extends lcPersistent
     \param boolean $hasRelatedObject
     \param string $lang
 
-     \retrun array
+    \retrun array
     */
     public static function fetchMenu($node_id,$hasRelatedObject = false ,$lang =null)
     {
@@ -209,10 +223,10 @@ class lcContentMenu extends lcPersistent
 
     /*!
      *
-     Enter description here ...
-     \param interger $Id
-     \return lcContentMenu
-     */
+    Enter description here ...
+    \param interger $Id
+    \return lcContentMenu
+    */
     public static function fetchById($Id)
     {
         $cond = array('id'=>$Id);
@@ -221,11 +235,11 @@ class lcContentMenu extends lcPersistent
 
     /*!
      *
-     Enter description here ...
-     \param interger $node_id mneu Node Id
-     \param string $lang site language
-     \return lcContentMenu
-     */
+    Enter description here ...
+    \param interger $node_id mneu Node Id
+    \param string $lang site language
+    \return lcContentMenu
+    */
     public static function fetchByNodeId($node_id,$lang=null,$asObject = false,$asList = false)
     {
         $cond = array('node_id'=>$node_id);
@@ -239,12 +253,12 @@ class lcContentMenu extends lcPersistent
 
     /*!
      *
-     Fetch contentmenu by path string
-     \param string $path path to search
-     \param string $lang
-     \param boolean $asObject
-     \return lcContentMenu
-     */
+    Fetch contentmenu by path string
+    \param string $path path to search
+    \param string $lang
+    \param boolean $asObject
+    \return lcContentMenu
+    */
     public static function fetchByPath($path,$lang,$asObject = false)
     {
         $cond = array('path_string'=>$path,
@@ -296,7 +310,7 @@ class lcContentMenu extends lcPersistent
             }
             $filter .= (is_string($value))?"$key='$value'":"$key=$value";
         }
-        	
+
         $filter .= " AND menu.node_id = contentmenu.node_id";
         $query = $query . " WHERE ".$filter;
         $db = lcDB::getInstance();
@@ -336,7 +350,7 @@ class lcContentMenu extends lcPersistent
             {
                 $parentPathString = $parentContentMenu['path_string'];
             }
-            
+
         }
 
         $newContentMenu = new lcContentMenu($rowNewContentArray);
@@ -387,7 +401,7 @@ class lcContentMenu extends lcPersistent
     public static function updatePaths($node_id)
     {
         $nodes = self::fetchByNodeId($node_id,null,true,true);
-       
+
         $db = lcDB::getInstance();
         $db->begin();
         foreach ($nodes as $node)
@@ -402,7 +416,7 @@ class lcContentMenu extends lcPersistent
             $newPathString = $parentPathString."/".$node->makeNormName($node->attribute('name'));
             $node->setAttribute('path_string',$newPathString);
             $node->store();
-            	
+
             $query = "SELECT * from contentmenu WHERE path_string like '$oldPathString%'";
             $pathLenght = strlen($oldPathString);
             $childrens = $db->arrayQuery($query);
@@ -414,7 +428,7 @@ class lcContentMenu extends lcPersistent
                 $query = "UPDATE contentmenu SET path_string='$newChildrenPathString' WHERE id=".$children['id'];
                 $db->query($query);
             }
-            	
+
         }
         $db->commit();
     }
@@ -449,9 +463,9 @@ class lcContentMenu extends lcPersistent
     }
 
     /*!
-       fecth the cotentmenu children of the current node
-       \param boolean $allversions
-     */
+     fecth the cotentmenu children of the current node
+    \param boolean $allversions
+    */
     public function children($allversions = false)
     {
         $db = lcDB::getInstance();
@@ -473,10 +487,10 @@ class lcContentMenu extends lcPersistent
         {
             return false;
         }
-         
+
     }
-    
-    
+
+
 
 
     protected $id;

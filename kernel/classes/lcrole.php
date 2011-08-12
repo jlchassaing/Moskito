@@ -1,21 +1,21 @@
 <?php
 
 /*!
-  
+
  \class lcRole lcrole.php
-  \version : 0.1
-  
+  \version  0.1
+
   This class gives all the toole to manage roles
   a role has a name and is a set of rules
-  
+
   \author jlchassaing
- 
+
  */
 
 class lcRole extends lcPersistent
 {
 	/*!
-	 
+
 	 Class construction
 	 \param array $row
 	 */
@@ -26,16 +26,16 @@ class lcRole extends lcPersistent
 		{
 			foreach ($row as $key=>$value)
 			{
-				
+
 				$this->setAttribute($key, $value);
-				
+
 			}
 		}
 		$this->getRules();
 	}
-	
+
 	/*!
-	 
+
 	 Class definition
 	 \return array
 	 */
@@ -51,7 +51,7 @@ class lcRole extends lcPersistent
 	}
 
 	/*!
-	 
+
 	 static function to fetch all the roles
 	 if $list is false then if only one result is returned then il will be directly returned
 	 otherwise an array will allways be returned
@@ -69,10 +69,10 @@ class lcRole extends lcPersistent
 			return $roles;
 		}
 	}
-	
+
 	/*!
-	 
-	 fetch role by id 
+
+	 fetch role by id
 	 \param int $roleId
 	 \return lcRole
 	 */
@@ -88,23 +88,23 @@ class lcRole extends lcPersistent
 			return false;
 		}
 	}
-	
+
 	/*!
-	 
+
 	 Load all the rules of the loaded role
 	 */
 	public function getRules()
 	{
 		$this->rules = lcRule::fetchRulesByRoleID($this->id);
 	}
-	
+
 /*! get attribute value if $name is declared in definition
 	  \param string $name
 	  \return mixed
 	 */
 	public function attribute($name)
 	{
-	    
+
 		if (isset($this->definition['fields'][$name]))
 		{
 			return $this->$name;
@@ -114,12 +114,12 @@ class lcRole extends lcPersistent
 		    return $this->$name;
 		}
 	}
-	
+
 	/*! set attribute value
 	  \param string $name name of the value
-	  \param mixed $value new value to set 
+	  \param mixed $value new value to set
 	 */
-	
+
 	public function setAttribute($name,$value)
 	{
 		if (isset($this->definition['fields'][$name]))
@@ -133,13 +133,13 @@ class lcRole extends lcPersistent
 				$this->$name =$value;
 			}
 		}
-		else 
+		else
 		{
-		    $this->$name = $value;    
-		} 
-		
+		    $this->$name = $value;
+		}
+
 	}
-	
+
 	/*!
 	  chek if the specified rolename exists.
 	  \param string $name
@@ -158,7 +158,7 @@ class lcRole extends lcPersistent
 	        return false;
 	    }
 	}
-	
+
 	/*!
 	 build a new role id
 	 */
@@ -167,15 +167,10 @@ class lcRole extends lcPersistent
 	    $row = array('name' => $roleName);
 	    return new self($row);
 	}
-	
-	
-	
-	
-	
-	
+
 	protected $name;
 	protected $id;
-	
+
 	private $rules;
 }
 

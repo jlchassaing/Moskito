@@ -68,7 +68,7 @@ class lcModule
         {
             $this->module = $module;
             include $modulePath.'/module.php';
-            	
+
             $this->viewList = $viewList;
             $this->conf = $moduleConf;
             return true;
@@ -89,7 +89,7 @@ class lcModule
         foreach ($Params as $value)
         {
             $redirectUrl = $redirectUrl ."/".urlencode($value);
-            	
+
         }
         $url = lcHTTPTool::buildUrl($redirectUrl);
         lcHTTPTool::redirect($url);
@@ -164,7 +164,7 @@ class lcModule
     */
     public function result()
     {
-        
+
         $Result = $this->buildView();
         $tpl = new lcTemplate();
 
@@ -172,7 +172,7 @@ class lcModule
         {
             $tpl->setVariable("currentNodeId", $this->params['NodeId']);
         }
-        
+
         $tpl->setVariable("MainResult", $Result['content']);
 
         return $tpl->fetch($Result['layout']);
@@ -193,7 +193,7 @@ class lcModule
         {
             $pathToScript = "modules/".$this->module."/".$this->viewList[$this->view]['script'];
             $Params = $this->params;
-            	
+
             if (file_exists($pathToScript))
             {
                 include $pathToScript;
@@ -260,7 +260,7 @@ class lcModule
                     {
                         $result[$value] = (is_numeric($requestArray[$key]))? (int)$requestArray[$key] :$requestArray[$key];
                     }
-                    	
+
                 }
             }
             return $result;
@@ -329,7 +329,7 @@ class lcModule
         }
         return $moduleList;
     }
-    
+
     /*!
      return the function list defined in the specified module definition
      \param string $moduleName
@@ -340,9 +340,25 @@ class lcModule
         $moduleDefPath = "modules/$moduleName/module.php";
         $functionList = array();
         include $moduleDefPath;
-        
+
         return $functionList;
-        
+
+    }
+
+    /*!
+     check if $name matches the current view
+     \param string $name
+     */
+    public function isCurrentAction($name)
+    {
+        if ($this->view == $name)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 

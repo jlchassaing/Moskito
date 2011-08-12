@@ -1,21 +1,26 @@
 <?php
 
 
-/*! 
- 
+/*!
+
  \class lcPersistent lcpersistent.php
- 
+
  $params attribute stores all the objects attributes
  they match the table fields.
- 
+
  \author Jean-Luc Chassaing
- 
+
  */
-abstract class lcPersistent
+class lcPersistent
 {
 	private $params;
 	protected $definition;
-	
+
+	public function __construct($row = null, $def = null)
+	{
+	    $this->definition = $def;
+	}
+
 
 	/*! Get definition fields
 	  \return array
@@ -24,8 +29,8 @@ abstract class lcPersistent
 	{
 		return $this->definition['fields'];
 	}
-	
-	
+
+
 	/*! get attribute value if $name is declared in definition
 	  \param string $name
 	  \return mixed
@@ -37,12 +42,12 @@ abstract class lcPersistent
 			return $this->$name;
 		}
 	}
-	
+
 	/*! set attribute value
 	  \param string $name name of the value
-	  \param mixed $value new value to set 
+	  \param mixed $value new value to set
 	 */
-	
+
 	public function setAttribute($name,$value)
 	{
 		if (isset($this->definition['fields'][$name]))
@@ -55,24 +60,24 @@ abstract class lcPersistent
 			{
 				$this->$name =$value;
 			}
-			
+
 		}
 	}
-	
+
 	public static function remove($def,$cond = null)
 	{
 		$tableName = $def['tableName'];
 		$db = lcDB::getInstance();
 		if (!is_null($cond))
 		{
-			
+
 			$conds = " WHERE " . $db->buildCond($cond);
 		}
 		$query = "DELETE FROM $tableName" . $conds;
-		
+
 		$db->query($query);
-		
-		
+
+
 	}
 
 	/*!static fetch function builds the query
@@ -103,39 +108,47 @@ abstract class lcPersistent
 
 		$query = $query . " ".$tableName .$conds.$orders;
 		$aQueryResult =  $db->arrayQuery($query);
-		if (count($aQueryResult) == 1 and !$list)
+		if ($aQueryResult !== false)
 		{
-			if ($asObject)
-			{
-				return new $def['className']($aQueryResult[0]);
-			}
-			else
-			{
-				return $aQueryResult[0];
-			}
+		    if (count($aQueryResult) == 1 and !$list)
+		    {
+		        if ($asObject)
+		        {
+		            return new $def['className']($aQueryResult[0]);
+		        }
+		        else
+		        {
+		            return $aQueryResult[0];
+		        }
+		    }
+		    else
+		    {
+		        if ($asObject)
+		        {
+		            $aObList = array();
+		            foreach ($aQueryResult as $value)
+		            {
+		                $aObList[] = new $def['className']($value);
+		            }
+		            return $aObList;
+		        }
+		        else
+		        {
+		            return $aQueryResult;
+		        }
+		    }
 		}
 		else
 		{
-			if ($asObject)
-			{
-				$aObList = array();
-				foreach ($aQueryResult as $value)
-				{
-					$aObList[] = new $def['className']($value);
-				}
-				return $aObList;
-			}
-			else
-			{
-				return $aQueryResult;
-			}
+		    return false;
 		}
+
 	}
 
 
-	
 
-	/*! 
+
+	/*!
 	 set the objects attributes based on
 	 the row definition. Each field matches
 	 a table field.
@@ -220,9 +233,9 @@ abstract class lcPersistent
 		}
 
 	}
-	
 
-	
+
+
 	public function makeNormName($name)
 	{
 		return lcStringTools::makeNormName($name);

@@ -1,14 +1,12 @@
 @CHARSET "UTF-8";
-*{font-family:verdana}
-body{background-color:#375D81;margin:0}
-div#page, div#debug{width:950px; margin:10px auto 0;display:block;background-color:white;padding:10px}
+*{font-family:arial;font-size:12px}
+body{background:#fff url(../images/moskito/fond.png) repeat-y center top;margin:0}
+div#page, div#debug{width:960px; margin:0 auto ;display:block;}
 h1{color:#183152;margin:0}
 h1 a, h1 a:visited{color:#183152;text-decoration:none}
 div#debug{margin-top:0}
 div#debug table{width:100%}
-table{width:100%}
-th{background-color:#2765b6;color:white;padding:2px 10px}
-td a{color:#05375d}
+
 .bgdark{background-color:#8bacd7}
 .bglight{background-color:#c3d9f6}
 div#edit-menu {
@@ -24,19 +22,27 @@ div.field label{display:block}
 div#edit-menu li form .actions input{border:1px solid #183152; color:White;background-color:#375D81}
 div.field:after, .clear:after{display:block;clear:both;height:0;visibility:hidden;content:"."}
 
-div#topmenu {background-color:#375D81}
+div#topmenu {
+  background-color: black;
+  bottom: 2px;
+  height: 30px;
+  opacity: 0.5;
+  position: absolute;
+  width: 100%;
+}
 div#topmenu:after {display:block;clear:both;height:0;visibility:hidden;content:"."}
 div#topmenu a, div#topmenu a:visited{text-decoration:none}
 
 div#topmenu ul{margin:0;padding:0}
-div#topmenu ul li{margin:0;padding:0 5px; border-right:2px solid white;display:inline;position:relative;float:left}
-div#topmenu ul li, div#topmenu ul li a, div#topmenu ul li a:visited{color:#fff;}
-div#topmenu ul li:hover, div#topmenu a:hover{background-color:#ccc;color:#183152}
+div#topmenu ul li{margin:0 5px 0 0;padding:0 5px;display:inline;position:relative;float:left}
+div#topmenu ul li, div#topmenu ul li a, div#topmenu ul li a:visited{color:#fff; line-height:30px}
+div#topmenu ul li:hover{background-color:black;color:#183152}
 
 a, a:visited{color:red;text-decoration:none;}
 a:hover{text-decoration:underline}
 
-div#user-login{width:350px;margin : 0 auto;}
+div#user-login{width:350px;margin : 20px auto;}
+div#user-login h2{text-shadow: 2px 2px 20px #999;}
 div#user-login div.field{margin:3px auto;width:211px}
 div#user-login div.buttons{text-align:center}
 div#user-login label {
@@ -48,5 +54,55 @@ div#user-login label {
 
 input[type=submit]{border:1px solid #fe0000;background-color: #2765b6; color:white;font-weight:bold }
 input[type=submit]:hover{background-color:#ccc; color:#375D81}
-div#header{}
-div#user{position:relative;}
+div#header{background: transparent url(../images/moskito/fond-header.jpg);height:146px;position:relative}
+div#title{float:left;margin:30px 0 0 30px}
+div#user{float:right;color:white; margin-right:10px;text-shadow: 2px 1px 3px black;}
+div#user span.username{color:#970303;}
+div#user a.disconnect{text-decoration:underline;color:black}
+
+div.borderbox{margin:10px 20px}
+
+div.borderbox .tl{background:transparent url(../images/moskito/tl.png) no-repeat left top;}
+div.borderbox .tr{background:transparent url(../images/moskito/tr.png) no-repeat right top;padding:0 12px}
+div.borderbox .tc{background:transparent url(../images/moskito/tc.png) repeat-x scroll left top; height:34px;}
+div.borderbox .ml{background:transparent none repeat-y left top;border-right:1px solid black}
+div.borderbox .mr{background:transparent none repeat-y right top;padding:0px;}
+div.borderbox .mc{background:#dfdfdf none repeat-x; border-left:1px solid black}
+div.borderbox .bl{background:transparent none no-repeat left top;}
+div.borderbox .br{background:transparent none no-repeat right top;padding:0px}
+div.borderbox .bc{background:transparent none repeat-x; height:0px;font-size:0px;border-bottom:1px solid black}
+div.borderbox .blocktitle{font-size:1em;font-weight:normal;color:white;line-height:34px}
+div.borderbox .content{padding:5px}
+div.borderbox .table-content{padding:0}
+
+table{width:100%}
+th{background-color:#2765b6;color:white;padding:2px 10px}
+td a,td a:visited{color:#05375d}
+
+.table-content table{border-spacing:0px;border-collapse:seperate}
+.table-content tr{}
+.table-content th, .table-content td{
+  
+  padding:5px 10px}
+.table-content th, .table-content tr.buttons td{ background-color: #414144;
+  border-top:1px solid #5B5B60;
+  border-bottom:1px solid #5B5B60;
+  border-right:1px solid #19191c;
+  border-left:1px solid #828288;
+  color: white;
+  }
+
+
+
+.table-content tr.dark td{background-color:#c1c1c1;
+border-left:1px solid white;border-right:1px solid #9B9B9C;border-bottom:1px solid #9B9B9C;border-top:1px solid #9B9B9C}
+
+.table-content tr.light td{background-color:#dfdfdf;
+border-left:1px solid white;border-right:1px solid #cbcbcc;border-bottom:1px solid #eee;border-top:1px solid #eee}
+.table-content tr td.first, .table-content tr th.first{border-left:0}
+.table-content tr td.last, .table-content tr th.last{border-right:0}
+.table-content tr .small{width:20px}
+.table-content tr .actions{width:50px}
+.table-content tr .actions a{padding:0 2px 0 0}
+
+a.upper{position:relative;top:4px}
