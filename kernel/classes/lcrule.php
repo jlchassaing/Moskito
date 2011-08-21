@@ -4,16 +4,16 @@
    \class lcRule lcrule.php
    \version 1.0
    \author Jean-Luc Chassaing
-   
+
    handels access rules.
-    
- 
+
+
  */
 class lcRule extends lcPersistent
 {
     /*!
      class constructor
-     \param array $row list of attributes to be set according to the 
+     \param array $row list of attributes to be set according to the
      static attributes defined in the static definition method.
      */
 	public function __construct($row = null)
@@ -60,10 +60,10 @@ class lcRule extends lcPersistent
 		if (is_array($this->params))
 		{
 			$this->params = Serialize($this->params);
-		}	
+		}
 		parent::store();
 	}
-	
+
 	/*!
 	 fetch rule liste by role Id
 	 \param integer $roleId
@@ -71,10 +71,10 @@ class lcRule extends lcPersistent
 	 */
 	public static function fetchRulesByRoleID($roleId)
 	{
-		$ruleList = self::fetch(self::definition(),array('role_id' => $roleId),true,null,true);
-		
+		$ruleList = self::fetch(self::definition(),array('role_id' => $roleId),null,null,null,true,true);
+
 		return $ruleList;
-		
+
 	}
 
 

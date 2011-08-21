@@ -22,7 +22,7 @@
 <div id="user">
 		<?php $user = lcUser::getCurrentUser()?>
 		<?php if ($user):?>
-		<p>Bonjour <span class="username"> <?php echo $user['login'];?></span> | paramètres | <a href="<?php $this->url('/user/logout');?>" class="disconnect" >se déconnecter</a></p>
+		<p>Bonjour <span class="username"> <?php echo $user->attribute('login');?></span> | paramètres | <a href="<?php $this->url('/user/logout');?>" class="disconnect" >se déconnecter</a></p>
 		<?php endif;?>
 
 </div>

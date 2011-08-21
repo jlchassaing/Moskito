@@ -360,6 +360,18 @@ class lcModule
             return false;
         }
     }
+
+    /*!
+     return the current view function name
+     \return string
+     */
+    public function functionName()
+    {
+        if(isset($this->viewList[$this->view]['function']))
+            return $this->viewList[$this->view]['function'];
+        else
+            return false;
+    }
 }
 
 ?>

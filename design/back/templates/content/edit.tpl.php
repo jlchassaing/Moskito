@@ -1,4 +1,11 @@
-<h2>Edition de contenu</h2>
+
+<div class="borderbox">
+
+<div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle">Edition de contenu</h2></div></div></div>
+<div class="ml"><div class="mr"><div class="mc">
+
+<div class="content edit">
+
 
 
 <form action="<?php $this->url("content/edit")?>" enctype="multipart/form-data" method="post">
@@ -9,12 +16,11 @@
 
 <?php endforeach;?>
 
-<h3>Position dans le menu</h3>
 
 
 <?php $parent=0;$path=0; $prec=0;$parentArray=array();$decal = "";?>
-<div class="field" id="edit-menu">
-<label>Parent</label>
+<div class="field">
+<label>Position dans le menu : parent</label>
 <select name="MenuParentValue">
 <option value="0" <?php if ($menu['parent_node_id'] == 0) echo "SELECTED";?> >Root</option>
 <?php foreach ($fullMenu as $key=>$item):?>
@@ -30,13 +36,14 @@ $decal=""; for ($i=2;$i<count($path);$i++) $decal = $decal."---";?>
 </div>
 
 
-<div class="field">
+<?php /*<div class="field">
 <label>Nom dans le menu</label>
 <input type="text" value="<?php if( isset($menu['name'])) echo $menu['name'];?>" name="MenuNameValue" />
 <?php if (isset($menu['id'])):?>
 <input type="hidden" name="ContentMenuIdValue" value="<?php echo $menu['id'];?>" />
 <?php endif;?>
-</div>
+</div> -->
+*/?>
 
 <div class="buttons">
 <input type="hidden" name="ObjectIdValue" value="<?php echo $object->attribute('id');?>" />
@@ -46,3 +53,10 @@ $decal=""; for ($i=2;$i<count($path);$i++) $decal = $decal."---";?>
 </div>
 
 </form>
+
+</div>
+
+</div></div></div>
+    <div class="bl"><div class="br"><div class="bc"></div></div></div>
+
+</div>

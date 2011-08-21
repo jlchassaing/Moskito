@@ -88,13 +88,35 @@ class lcPersistent
 	 \param array $def
 	 \param array $cond
 	 */
-	public static function fetch($def,$cond = null,$asObject=false, $order = null,$list=false)
+
+	public static function fetch($def, $cond = null, $fields = null, $order = null, $limit = null, $asObject=false, $list=false)
 	{
 		$db = lcDB::getInstance();
 		$tableName = $def['tableName'];
-		$query = "SELECT * FROM ";
+		$fieldList = "*";
 		$conds = "";
 		$orders = "";
+		$limitCond = "";
+
+		if (is_string($fields))
+		{
+		    $fieldList = $fields;
+		}
+		elseif (is_array($fields))
+		{
+		    foreach ($fields as $fieldName)
+		    {
+		        $fieldList = "";
+		        if (isset($def['fields'][$fieldName]))
+		        {
+		            if (!$fieldList == "" )
+		            {
+		                $fieldList = $fieldList .", ";
+		            }
+		            $fieldList = $fieldList . "$tableName.$fieldName";
+		        }
+		    }
+		}
 		if (!is_null($cond))
 		{
 			$conds = " WHERE " . $db->buildCond($cond);
@@ -106,7 +128,20 @@ class lcPersistent
 
 		}
 
-		$query = $query . " ".$tableName .$conds.$orders;
+		if (!is_null($limit))
+		{
+		    if (is_array($limit) and count($limit) == 2)
+		    {
+		        $limitCond = " LIMIT ".$limit[0].",".$limit[1];
+		    }
+		    else
+		    {
+		        $limitCond = " LIMIT $limit";
+		    }
+		}
+
+		$query = "SELECT $fieldList FROM ";
+		$query = $query . " ".$tableName .$conds.$orders.$limitCond;
 		$aQueryResult =  $db->arrayQuery($query);
 		if ($aQueryResult !== false)
 		{
@@ -143,6 +178,18 @@ class lcPersistent
 		    return false;
 		}
 
+	}
+
+	public static function fetchCount($def, $cond = null)
+	{
+
+	    $res = $this->fetch($def,$cond,"count(*) as NB",null,null,false,false);
+	    if (isset($res['NB']))
+	    {
+	        return $res['NB'];
+	    }
+	    else
+	        return false;
 	}
 
 

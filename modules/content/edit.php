@@ -14,7 +14,7 @@ if ($http->hasPostVariable("SaveButton"))
 	if ($http->hasPostVariable("ObjectIdValue"))
 	{
 		$objectID = $http->postVariable("ObjectIdValue");
-		
+
 		if ($http->hasPostVariable("ContentLanguageValue"))
 		{
 			$lang = $http->postVariable("ContentLanguageValue");
@@ -23,9 +23,9 @@ if ($http->hasPostVariable("SaveButton"))
 		{
 			$lang = $GLOBALS['SETTINGS']['currentLanguage'];
 		}
-		
+
 		$contentObject = lcContentObject::fetchById($objectID,true);
-		
+
 		foreach ($contentObject->dataMap() as $attribute)
 		{
 			$dataType = $attribute->datatype();
@@ -35,14 +35,14 @@ if ($http->hasPostVariable("SaveButton"))
 			}
 		}
 		$contentObject->store();
-		
+
 		if ($http->hasPostVariable("ContentMenuIdValue"))
 		{
 			$contentMenuId = $http->postVariable("ContentMenuIdValue");
-			
+
 			$currentContentMenu = lcContentMenu::fetchById($contentMenuId);
 		}
-		
+
 		if ($http->hasPostVariable("MenuParentValue"))
 		{
 			$parentId = $http->postVariable("MenuParentValue");
@@ -61,36 +61,36 @@ if ($http->hasPostVariable("SaveButton"))
 			}
 			else
 			{
-				$NewMenu = lcContentMenu::addMenuTo($parentId,$menuName,$contentObject->attribute('id'),$lang);	
+				$NewMenu = lcContentMenu::addMenuTo($parentId,$menuName,$contentObject->attribute('id'),$lang);
 			}
-			
+
 		}
 	}
 	$Module->redirectToModule('content','manage');
-	
-	
+
+
 }
 else
 {
-	
+
 	$contentObject = lcContentObject::fetchById($objectID,$lang);
 	if ($contentObject instanceof lcContentObject)
 	{
 		$contentMenu = lcContentMenu::fetchByObjectId($objectID, $lang);
-		
+
 		$fullMenu = lcContentMenu::fetchMenuTree(1,null,null,true);
 		$tpl->setVariable("object", $contentObject);
 		$tpl->setVariable("lang", $lang);
 		$tpl->setVariable("menu", $contentMenu);
 		$tpl->setVariable("fullMenu", $fullMenu);
 	}
-	else 
+	else
 	{
 		lcDebug::write("ERROR", "There is not contentobject matching id : $objectID");
 	}
-	
-	$tplName = "edit/edit.tpl.php";
-		
+
+	$tplName = "content/edit.tpl.php";
+
 }
 
 $Result['content'] = $tpl->fetch($tplName);

@@ -163,7 +163,15 @@ if ($currentAccess == 'setup')
 }
 else
 {
-    $userLogin = lcUser::can($Module);
+    if ($siteSettings->value("User", "login"))
+    {
+        $userLogin = true;
+    }
+    else
+    {
+        $userLogin = false;
+    }
+
 }
 
 
@@ -171,9 +179,6 @@ else
 
 if ($userLogin)
 {
-	if ($siteSettings->value("User", "login"))
-	{
-
 		lcSession::start();
 
 		// gestion de la session
@@ -184,14 +189,14 @@ if ($userLogin)
 			$redirectUri = lcHTTPTool::buildUrl("/user/login");
 			lcHTTPTool::redirect($redirectUri);
 		}
-	}
-	else
-	{
-		$Module->errorNumber = 20;
-	}
-
 
 	// chargement du module d'authentification si pas logué.
+}
+
+$user = lcUser::getCurrentUser();
+if (!$user->can($Module))
+{
+    $Module->errorNumber = 20;
 }
 
 if ($Module->isError())

@@ -17,7 +17,8 @@ $viewList['edit']= array('script'=>'edit.php',
 						 'ordered_params'=>array("ObjectId",'Lang'),
                          'function' => 'edit');
 $viewList['manage']= array('script'=>'manage.php',
-                           'function' => 'edit');
+                           'function' => 'edit',
+                           'ordered_params' => array('Offset', 'Limit'));
 $viewList['googlesitemap']= array('script'=>'googlesitemap.php',
                                   'function' => 'read');
 $viewList['select']= array('script'=>'select.php',

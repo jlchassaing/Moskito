@@ -105,7 +105,9 @@ class lcHTTPTool
         }
 
         $result['fullrequest'] = (substr($request, -1) != "/")?$request."/":$request;
+        $result['fullrequest'] = str_replace("?", "", $result['fullrequest']);
         $result['url_alias'] = (substr($request, -1) == "/")?substr($request,0 -1):$request;
+        $result['url_alias'] = str_replace("?", "", $result['url_alias']);
         if ($request != "/")
         {
             $request = substr($request, 1);

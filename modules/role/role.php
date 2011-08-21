@@ -24,7 +24,7 @@ if ($Module->isCurrentView("view"))
 }
 else
 {
-    $roleList = lcRole::fetch(lcRole::definition(),null,true,null,true);
+    $roleList = lcRole::fetch(lcRole::definition(),null,null,null,null,true,true);
 
     $tpl->setVariable("roles", $roleList);
 

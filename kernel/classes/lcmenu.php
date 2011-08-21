@@ -110,7 +110,7 @@ class lcMenu extends lcPersistent
     public static function fetchById($menuId)
     {
         $cond = array('node_id'=>$menuId);
-        return self::fetch(self::definition(),$cond,true);
+        return self::fetch(self::definition(),$cond,null,null,null,true);
     }
 
 
@@ -188,7 +188,7 @@ class lcMenu extends lcPersistent
 
         // updating children nodes path_ids
         $cond = array('path_ids' => "$oldPathId%");
-        $childrenNodes = self::fetch(self::definition(),$cond,false,null,true);
+        $childrenNodes = self::fetch(self::definition(),$cond,null,null,null,false,true);
         $db = lcDB::getInstance();
         $db->begin();
         foreach ($childrenNodes as $children)

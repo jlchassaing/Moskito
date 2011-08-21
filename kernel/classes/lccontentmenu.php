@@ -205,7 +205,7 @@ class lcContentMenu extends lcPersistent
     */
     public static function updateAllChildrenPathStrings($parentId)
     {
-        $parents = self::fetch(self::definition(),array('node_id'=> $parentId),true);
+        $parents = self::fetch(self::definition(),array('node_id'=> $parentId),null,null,null,true);
         if (is_array($parents))
         {
             foreach ($parents as $parent)
@@ -230,7 +230,7 @@ class lcContentMenu extends lcPersistent
     public static function fetchById($Id)
     {
         $cond = array('id'=>$Id);
-        return self::fetch(self::definition(),$cond,true);
+        return self::fetch(self::definition(),$cond,null,null,null,true);
     }
 
     /*!
@@ -247,7 +247,7 @@ class lcContentMenu extends lcPersistent
         {
             $cond['lang'] = $lang;
         }
-        return self::fetch(self::definition(),$cond,$asObject,null,$asList);
+        return self::fetch(self::definition(),$cond,null,null,null,$asObject,$asList);
     }
 
 
@@ -263,7 +263,7 @@ class lcContentMenu extends lcPersistent
     {
         $cond = array('path_string'=>$path,
 					  'lang' => $lang);
-        return self::fetch(self::definition(),$cond,$asObject);
+        return self::fetch(self::definition(),$cond,null,null,null,$asObject);
     }
 
     /*!

@@ -2,7 +2,7 @@
 
 $tpl = new lcTemplate();
 
-$contentList = lcContentObject::fetch(lcContentObject::definition(),null,true,null,true);
+$contentList = lcContentObject::fetch(lcContentObject::definition(),null,null,null,null,true,true);
 
 $settings = lcSettings::getInstance();
 $currentLanguage = $settings->value('lang','current');

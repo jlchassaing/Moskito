@@ -181,7 +181,7 @@ CREATE TABLE `rules` (
 
 LOCK TABLES `rules` WRITE;
 /*!40000 ALTER TABLE `rules` DISABLE KEYS */;
-INSERT INTO `rules` VALUES (1,1,'content','read',''),(2,1,'content','edit',''),(3,2,'content','read','');
+INSERT INTO `rules` VALUES (1,1,'all','all',''),(3,2,'content','read','');
 /*!40000 ALTER TABLE `rules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -269,4 +269,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-08-12 17:41:55
+-- Dump completed on 2011-08-14 17:41:35

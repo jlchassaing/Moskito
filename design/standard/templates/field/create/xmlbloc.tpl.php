@@ -13,5 +13,5 @@
 </script>
 <div class="field">
 <label for="field_<?php echo $data['Identifier'];?>"><?php echo $data['Name'];?></label>
-<textarea name="field_<?php echo $data['Identifier']."_".$data['DataType'];?>" id="elm1" name="elm1" rows="15" cols="80" style="width: 80%" ></textarea>
+<textarea name="field_<?php echo $data['Identifier']."_".$data['DataType'];?>" id="elm1" name="elm1"  ></textarea>
 </div>

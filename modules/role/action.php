@@ -66,31 +66,31 @@ elseif($http->hasPostVariable("SaveRuleButton"))
             {
                 $saveRule = true;
             }
-            else 
+            else
             {
                  $functionList = lcModule::getModuleFunctions($moduleName);
                  if (count($functionList[$functionName]) != 0)
                  {
                      /// manage rule params
                  }
-                 else 
+                 else
                  {
                      $saveRule = true;
                  }
             }
         }
     }
-    
+
     if ($saveRule)
     {
         $ruleParams['role_id'] = $roleId;
         $ruleParams['module'] = $moduleName;
         $ruleParams['function'] = $functionName;
         $ruleParams['params'] = $params;
-        
+
         $newRule = new lcRule($ruleParams);
         $newRule->store();
-        
+
         $Module->redirectToModule('role','list');
     }
 
@@ -103,7 +103,7 @@ elseif($http->hasPostVariable("deleteSelectedButton"))
 }
 else
 {
-    $roleList = lcRole::fetch(lcRole::definition(),null,true,null,true);
+    $roleList = lcRole::fetch(lcRole::definition(),null,null,null,null,true,true);
 
     $tpl->setVariable("roles", $roleList);
 

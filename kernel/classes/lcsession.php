@@ -35,6 +35,16 @@ class lcSession
         }
     }
 
+    public static function stop()
+    {
+        if (self::$hasStarted)
+        {
+            $_SESSION = array();
+            session_destroy();
+            self::$hasStarted = false;
+        }
+    }
+
     /*!
      check if a variable is set in the session
      \param string $name variable name

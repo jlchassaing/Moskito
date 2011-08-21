@@ -5,10 +5,10 @@
   \ingroup lcKernel
   \version 1.0
   \author Jean-Luc Chassaing
-  
+
   \brief handels  content objects
 
-  holds object definition 
+  holds object definition
 
 */
 
@@ -39,38 +39,38 @@ class lcContentObject extends lcPersistent
 										  'node_id' 		=> array('type' => 'integer')
 		),
 					 'key' => 'id'
-									  
+
 					 );
 	}
 
 	/*!
-	 
-	 contentobject fetcher get object by objectId 
+
+	 contentobject fetcher get object by objectId
 	 \param integer $objectId the contentobject id to fetch
-	 \param string 	$lang the language 
+	 \param string 	$lang the language
 	 \param boolean $object if set to true the function will return an object
 	 \return mixed.
-	 
+
 	 */
 	public static function fetchById($objectId,$lang=null,$asObject = true)
 	{
 
-		$object = self::fetch(self::definition(), array('id' => $objectId),$asObject);
+		$object = self::fetch(self::definition(), array('id' => $objectId),null,null,null,$asObject);
 
 		return $object;
 
 	}
 
 	/*!
-	 
+
 	 fetch contentobject by nodeId the node id matches an contentmenu item. Each contentobject
 	 is linked to a contentmenu object
-	 
+
 	 \param integer $nodeId
-	  \param string 	$lang the language 
+	  \param string 	$lang the language
 	 \param boolean $object if set to true the function will return an object
 	 \return mixed.
-	 
+
 	 */
 	public static function fetchByNodeId($nodeId,$lang = null,$asObject = true)
 	{
@@ -89,18 +89,18 @@ class lcContentObject extends lcPersistent
 		}
 
 	}
-	
+
 	public function path()
 	{
 	    $contentMenu = lcContentMenu::fetchByObjectId($this->id,$this->lang,false);
 	    return $contentMenu['path_string'];
 	}
-	
-	
+
+
 
 	/*!
 	 set object language
-	 \param string $lang 
+	 \param string $lang
 	 */
 	public function setLang($lang)
 	{
@@ -122,8 +122,8 @@ class lcContentObject extends lcPersistent
 	 \param array $row
 	 \note the parmametre must be an array that matches the object definition
 	 	the lang parameter is an extra parameter that is not part of the persistent
-	 	parameters. 
-	 
+	 	parameters.
+
 	 */
 	public function __construct(array $row)
 	{
@@ -131,7 +131,7 @@ class lcContentObject extends lcPersistent
 		if (isset($row['class_identifier']))
 		{
 			$this->class_identifier = $row['class_identifier'];
-				
+
 		}
 		foreach ($row as $key=>$value)
 		{
@@ -158,7 +158,7 @@ class lcContentObject extends lcPersistent
 
 
 	/*!
-	 
+
 	 get an object attribute
 	 this attribute can be a persistent attribute declared in the definition array
 	 or not.
@@ -200,7 +200,7 @@ class lcContentObject extends lcPersistent
 	{
 		if (!isset($this->$name))
 		{
-				
+
 			$this->$name = (is_numeric($value))?(int) $value:$value;
 			return true;
 		}
@@ -223,9 +223,12 @@ class lcContentObject extends lcPersistent
 			$contentName= "";
 			$namingRule = $contentClass->getNamingRule();
 			$field = $this->attribute($namingRule);
-			$this->object_name =  $this->makeNormName($field);
+			/*
+			 $this->object_name =  $this->makeNormName($field);
+			 */
+			$this->object_name =  $field;
 		}
-			
+
 
 	}
 
@@ -256,7 +259,7 @@ class lcContentObject extends lcPersistent
 			$contentClass = lcContentClass::getInstance($this->class_identifier);
 			$dataFieldsDefinition = $contentClass->getFields();
 			$this->data_map = lcContentObjectAttribute::loadAttributes($dataFieldsDefinition, $lang, $this->id);
-			
+
 		}
 	}
 
@@ -281,7 +284,9 @@ class lcContentObject extends lcPersistent
 	{
 		$db = lcDB::getInstance();
 		$db->begin();
+
 		$this->buildName();
+
 		$newInsert = false;
 		$lastId = parent::store();
 		if (!isset($this->id) AND is_integer($lastId))

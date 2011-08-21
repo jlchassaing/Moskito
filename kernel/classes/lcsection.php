@@ -62,7 +62,7 @@ class lcSection extends lcPersistent
     public static function fetchByName($sectionName)
     {
         $cond = array('name' => $sectionName);
-        return self::fetch(self::definition(),$cond,true);
+        return self::fetch(self::definition(),$cond,null,null,null,true);
     }
 
     public static function add($sectionName)

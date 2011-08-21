@@ -56,7 +56,14 @@ class lcSettings
             $this->settings = array();
             $conf1 = $this->loadConf("settings/$iniFile.ini");
             $conf2 = $this->loadConf("settings/accesses/$access/$iniFile.ini");
-            $this->settings = array_merge($conf1,$conf2);
+            if (is_array($conf2))
+            {
+                $this->settings = array_merge($conf1,$conf2);
+            }
+            else
+            {
+                $this->settings = $conf1;
+            }
         }
 
 
@@ -75,6 +82,8 @@ class lcSettings
 
             return $conf;
         }
+        else
+            return false;
     }
 
     /*!

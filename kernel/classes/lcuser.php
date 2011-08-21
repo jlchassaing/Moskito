@@ -83,6 +83,13 @@ class lcUser extends lcPersistent
 
 			return self::getById($userId);
 		}
+		else
+		{
+		    $annonUserArray = array('login' => 'anonymous',
+		                            'role' => 'anonymous');
+		    return new lcUser($annonUserArray);
+		}
+
 	}
 
 	/*!
@@ -93,7 +100,7 @@ class lcUser extends lcPersistent
 	public static function getById($user_id)
 	{
 		$cond = array('id'=>$user_id);
-		$user = self::fetch(self::definition(), $cond);
+		$user = self::fetch(self::definition(), $cond,null,null,null,true);
 
 		return $user;
 	}
@@ -101,7 +108,7 @@ class lcUser extends lcPersistent
 	public static function getByRole($role)
 	{
 	    $cond = array('role' => $role);
-	    $list = self::fetch(self::definition(),$cond,false,null,true);
+	    $list = self::fetch(self::definition(),$cond,null,null,null,false,true);
 	    return $list;
 	}
 
@@ -112,7 +119,7 @@ class lcUser extends lcPersistent
 	 */
 	public static function getUsers()
 	{
-		$users = self::fetch(self::definition(),null,true);
+		$users = self::fetch(self::definition(),null,null,null,null,true);
 		if ($users instanceof lcUser)
 		{
 			return array($users);
@@ -127,11 +134,32 @@ class lcUser extends lcPersistent
 	 static method that returns true if the user can perform the module
 	 \return boolean
 	 */
-	public static function can(& $Module)
+	public function can(& $Module)
 	{
 		$settings = lcSettings::getInstance();
-		$currentLoadedModule = $Module->module;
-		$currentLoadedView = $Module->view;
+		//$currentLoadedModule = $Module->module;
+		//$currentLoadedView = $Module->view;
+        $hasAccess = false;
+
+        if ($Module->module == "user" and $Module->view == "login")
+        {
+            $hasAccess = true;
+        }
+        else
+        {
+            $userRole = lcRole::fetchByName($this->role);
+            if($userRole)
+            {
+                if ($userRole->hasAccessTo($Module))
+                {
+                    $hasAccess = true;
+                }
+
+            }
+        }
+
+
+        /*
 		$userLogin = true;
 		if ($currentLoadedModule == 'content' and ($currentLoadedView == 'view' or $currentLoadedView == 'googlesitemap'))
 		{
@@ -146,9 +174,10 @@ class lcUser extends lcPersistent
 		{
 			$userLogin = true;
 		}
+		*/
 
 
-		return $userLogin;
+		return $hasAccess;
 	}
 
 

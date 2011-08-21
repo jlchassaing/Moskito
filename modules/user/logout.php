@@ -1,10 +1,8 @@
 <?php
 
-if (isset($_SESSION['user_id']))
-{
-	unset($_SESSION['user_id']);
-	
-}
+
+lcSession::resetValue('user_id');
+lcSession::stop();
 $redirUri = lcHTTPTool::buildUrl('/');
 lcHTTPTool::redirect($redirUri);
 
