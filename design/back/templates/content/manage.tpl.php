@@ -2,9 +2,13 @@
 
 
 
+
 <div class="borderbox">
 
-<div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle">Liste des contenus</h2></div></div></div>
+<div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle">Liste des contenus <?php $this->includeTpl('content/paging.tpl.php',array('offset'=>$offset,
+													   'nbitems'=>$nbitems,
+													   'elements_count' => $nb_elements,
+                                                       'url' => $this->url("/content/manage",'no')));?></h2> </div></div></div>
 <div class="ml"><div class="mr"><div class="mc">
 
 <div class="table-content">

@@ -16,7 +16,8 @@ class lcContentClass
 				$this->fields[$field['Identifier']] = array('identifier'=>$field['Identifier'],
 															'name' 		=> $field['Name'],
 															'datatype'  => $field['DataType'],
-															'required'  => ($field['Required'] == 'true')?true:false
+															'required'  => $field['Required'],
+															'formfield' => (isset($field['FormField']))?$field['FormField']:false
 				);
 			}
 		}
@@ -39,11 +40,11 @@ class lcContentClass
 						$tmp = explode(".",$file);
 						if ($tmp[1] == "xml")
 						{
-							$aClassIdentifiers[] = $tmp[0];	
+							$aClassIdentifiers[] = $tmp[0];
 						}
 					}
-					
-					
+
+
 				}
 				closedir($dh);
 			}
@@ -107,7 +108,7 @@ class lcContentClass
 				if ($node->nodeName == "Fields")
 				{
 					$classDef['Fields'] = array();
-						
+
 					foreach ($node->childNodes as $key=>$fieldDef)
 					{
 						if ($fieldDef->nodeName == "Field")
@@ -115,7 +116,14 @@ class lcContentClass
 							foreach ($fieldDef->childNodes as $field)
 							{
 								if ($field->nodeName != "#text")
-								$tmp[$field->nodeName] = $field->nodeValue;
+								{
+								$value = $field->nodeValue;
+								if ($value == "true" or $value == "TRUE")
+								    $value = true;
+								elseif ($value == "false" or $value == "FALSE")
+								    $value = false;
+								$tmp[$field->nodeName] = $value;
+								}
 							}
 							$classDef['Fields'][]=$tmp;
 						}
@@ -123,7 +131,7 @@ class lcContentClass
 					}
 				}
 			}
-				
+
 		}
 		if (is_array($classDef))
 		{

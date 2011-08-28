@@ -124,7 +124,8 @@ class lcMenu extends lcPersistent
             $parent = self::fetchById($parent);
             if ($parent instanceof lcMenu)
             {
-                $newNodeData = array("parent_node_id" => $parent->attribute('node_id'));
+                $newNodeData = array("parent_node_id" => $parent->attribute('node_id'),
+                                     "section_id"     => $parent->attribute('section_id'));
                 $parentPathIds = $parent->attribute("path_ids");
 
                 $newNodeData["sort_val"] = self::getSortVal($parent);
@@ -172,12 +173,14 @@ class lcMenu extends lcPersistent
         {
             $newParent = self::fetchById($parent);
             $parentPathId = $newParent->attribute('path_ids');
+            $section_id  = $newParent->attriubte('section_id');
         }
 
         $oldPathId = $this->path_ids;
         $newPathId = $parentPathId.$this->node_id."/";
         $this->path_ids = $newPathId;
         $this->parent_node_id = $parent;
+        $this->section_id = $section_id;
 
         // update sort val
 
@@ -201,7 +204,7 @@ class lcMenu extends lcPersistent
             $childrenSortVal = substr($children['sort_val'],-2);
             $newChildrenSortVal = $newSortValue."/".$childrenSortVal;
             $query = "UPDATE ".$this->definition['tableName'] ." SET ".
-					 "path_ids = '$newChildrenPath', sort_val='$newChildrenSortVal' WHERE ".
+					 "path_ids = '$newChildrenPath', sort_val='$newChildrenSortVal',section_id=$section_id WHERE ".
 					 "node_id = ".$children['node_id'];
             $db->query($query);
         }

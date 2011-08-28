@@ -16,6 +16,9 @@ $viewList['menu']= array('script'=>'menu.php',
 $viewList['edit']= array('script'=>'edit.php',
 						 'ordered_params'=>array("ObjectId",'Lang'),
                          'function' => 'edit');
+$viewList['delete']= array('script'=>'remove.php',
+						 'ordered_params'=>array("ObjectId",'Lang'),
+                         'function' => 'remove');
 $viewList['manage']= array('script'=>'manage.php',
                            'function' => 'edit',
                            'ordered_params' => array('Offset', 'Limit'));
@@ -28,6 +31,7 @@ $viewList['select']= array('script'=>'select.php',
 $functionList = array();
 $functionList['read'] = array();
 $functionList['edit'] = array();
+$functionList['remove'] = array();
 $functionList['create'] = array();
 
 

@@ -36,14 +36,14 @@ $decal=""; for ($i=2;$i<count($path);$i++) $decal = $decal."---";?>
 </div>
 
 
-<?php /*<div class="field">
+<?php /* <div class="field">
 <label>Nom dans le menu</label>
-<input type="text" value="<?php if( isset($menu['name'])) echo $menu['name'];?>" name="MenuNameValue" />
-<?php if (isset($menu['id'])):?>
+<input type="text" value="<?php if( isset($menu['name'])) echo $menu['name'];?>" name="MenuNameValue" />*/
+if (isset($menu['id'])):?>
 <input type="hidden" name="ContentMenuIdValue" value="<?php echo $menu['id'];?>" />
 <?php endif;?>
-</div> -->
-*/?>
+
+
 
 <div class="buttons">
 <input type="hidden" name="ObjectIdValue" value="<?php echo $object->attribute('id');?>" />

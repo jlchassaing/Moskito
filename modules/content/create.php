@@ -14,7 +14,7 @@ if ($http->hasPostVariable("CreateButton"))
 	else
 	{
 		lcDebug::write("ERROR", "No class Identifier to create content");
-		$isError = true;	
+		$isError = true;
 		$errorMsg = "No class Identifier to create content";
 	}
 	if ($http->hasPostVariable("LanguageValue"))
@@ -25,14 +25,14 @@ if ($http->hasPostVariable("CreateButton"))
 	{
 		$lang = $GLOBALS['SETTINGS']['currentLanguage'];
 	}
-	
+
 	if (!$isError)
 	{
-		
+
 		$data = array('class_identifier'=>$classid,'lang'=>$lang);
-		
+
 		$newObject = new lcContentObject($data);
-		
+
 		foreach ($newObject->dataMap() as $attribute)
 		{
 			$dataType = $attribute->datatype();
@@ -42,15 +42,15 @@ if ($http->hasPostVariable("CreateButton"))
 			}
 		}
 		$newObject->store();
-		
+
 		if ($http->hasPostVariable("MenuParentValue"))
 		{
 			$parentId = $http->postVariable("MenuParentValue");
 			$menuName = "";
-			if ($http->hasPostVariable("MenuNameValue"))
+			/*if ($http->hasPostVariable("MenuNameValue"))
 			{
 				$menuName = $http->postVariable("MenuNameValue");
-			}
+			}*/
 			if ($menuName == "")
 			{
 				$menuName = $newObject->attribute('object_name');
@@ -64,22 +64,22 @@ else
 {
 	$classID = $Params['ClassId'];
 	$settings = lcSettings::getInstance();
-	
+
 	$lang = (!isset($Params['Lang']) or $Params['Lang']== "")?$settings->value('lang','current'): $Params['Lang'];
-	
-	
+
+
 	$contentClass = lcContentClass::loadClassDefinition($classID);
 	$fullMenu = lcContentMenu::fetchMenuTree(1,null,null,true);
 
 	$tpl->setVariable("class", $contentClass);
-	
+
 	$tpl->setVariable("class_id", $classID);
 	$tpl->setVariable("lang", $lang);
 	$tpl->setVariable("fullMenu", $fullMenu);
-	
-	
-	// ajouter lang au formulaire de création 
-	
+
+
+	// ajouter lang au formulaire de création
+
 	$Result['content'] = $tpl->fetch("content/create.tpl.php");
 
 }

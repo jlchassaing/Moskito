@@ -4,8 +4,8 @@
 $http = lcHTTPTool::getInstance();
 $tpl = new lcTemplate();
 
-$objectID = $Params['ObjectId'];
-$lang = $Params['Lang'];
+$objectID = (isset($Params['ObjectId']))?$Params['ObjectId']:null;
+$lang = (isset($Params['Lang']))?$Params['Lang']:null;
 $Module = $Params['Module'];
 
 if ($http->hasPostVariable("SaveButton"))

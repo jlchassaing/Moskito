@@ -24,6 +24,7 @@ div.field:after, .clear:after{display:block;clear:both;height:0;visibility:hidde
 div.edit div.field{border: 1px solid #c1c1c1;background:white;padding:10px}
 div.edit label{font-weight:bold}
 div.edit input {margin-top:5px;padding:3px;border:1px solid #c1c1c1}
+div.edit input[type=text]{width:878px}
 div.edit textarea{width:100%}
 div.edit table.mceLayout{border:1px solid #c1c1c1;margin-top:5px}
 div#topmenu {
@@ -110,3 +111,12 @@ border-left:1px solid white;border-right:1px solid #cbcbcc;border-bottom:1px sol
 .table-content tr .actions a{padding:0 2px 0 0}
 
 a.upper{position:relative;top:4px}
+
+
+/* paging */
+
+div.pagination{display:inline}
+div.pagination ul{display:inline;padding:5px}
+div.pagination li{display:inline}
+div.pagination li a{}
+div.pagination li.current{font-weight:bold}

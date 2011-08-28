@@ -183,7 +183,7 @@ class lcPersistent
 	public static function fetchCount($def, $cond = null)
 	{
 
-	    $res = $this->fetch($def,$cond,"count(*) as NB",null,null,false,false);
+	    $res = self::fetch($def,$cond,"count(*) as NB",null,null,false,false);
 	    if (isset($res['NB']))
 	    {
 	        return $res['NB'];

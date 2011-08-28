@@ -37,11 +37,11 @@ class lcTemplate
             ob_start();
             if (is_array($this->params))
             {
-                foreach ($this->params as $name=>$value)
+               /* foreach ($this->params as $name=>$value)
                 {
-                    ${
-                        $name}=$value;
-                }
+                    ${$name}=$value;
+                }*/
+                extract($this->params);
             }
             /*$codeMakeUrl = '$http = lcHTTPTool::getInstance();'.
              'echo $http->makeUrl($path);';
@@ -62,11 +62,11 @@ class lcTemplate
             ob_start();
             if (is_array($params))
             {
-                foreach ($params as $name=>$value)
+                /*foreach ($params as $name=>$value)
                 {
-                    ${
-                        $name}=$value;
-                }
+                    ${$name}=$value;
+                }*/
+                extract($params);
             }
 
             include $templateFile;
@@ -157,7 +157,11 @@ class lcTemplate
         {
             case "url":
                 $http = lcHTTPTool::getInstance();
-                echo $http->makeUrl($params[0]);
+                $url = $http->makeUrl($params[0]);
+                if (isset($params[1]) AND  $params[1] == 'no')
+                    return $url;
+                else
+                    echo $url;
                 break;
             case "attributeView":
                 $tplSrc = $params[0];
