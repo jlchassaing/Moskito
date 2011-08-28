@@ -32,7 +32,7 @@ class lcStringDataType implements lcDatatypeInterface
 			$contentAttribute->setAttribute('txt_value',$attributeValue);
 			$this->value = 	$attributeValue;
 		}
-			
+
 	}
 
 

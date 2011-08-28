@@ -31,7 +31,7 @@ class lcXmlblocDataType implements lcDatatypeInterface
 			$contentAttribute->setAttribute('ltxt_value',$attributeValue);
 			$this->value = 	$attributeValue;
 		}
-			
+
 	}
 
 

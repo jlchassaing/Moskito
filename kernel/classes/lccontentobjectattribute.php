@@ -81,7 +81,7 @@ class lcContentObjectAttribute extends lcPersistent
 
     public function content()
     {
-        return $this->content->content();
+        return $this->content->content($this);
     }
 
     public function hasContent()

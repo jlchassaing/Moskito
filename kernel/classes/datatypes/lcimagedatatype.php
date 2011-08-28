@@ -5,16 +5,16 @@ class lcImageDataType implements lcDatatypeInterface
 {
 
 	private $value;
-	
+
 	const DATATYPE = "image";
 
 	function __construct(& $contentAttribute)
 	{
-		
-		$this->value = new lcImage($contentAttribute->attribute('ltxt_value'));	
-		
-		
-		
+
+		$this->value = new lcImage($contentAttribute->attribute('ltxt_value'));
+
+
+
 	}
 
 	public function canGetFromHttp($http, & $contentAttribute)
@@ -41,7 +41,7 @@ class lcImageDataType implements lcDatatypeInterface
 			{
 				lcDebug::write("Error", "The file can't be uploaded see debug.");
 				return false;
-					
+
 			}
 		}
 		return false;
@@ -59,11 +59,11 @@ class lcImageDataType implements lcDatatypeInterface
 			$fileInfo['created'] = date("d-m-Y",time());
 
 			$this->value->setFileInfos($fileInfo);
-			
+
 			$filePath = $this->value->path();
 			// seeking for file with the same name.
 			// if found, the file Name is completed with a number.
-			
+
 			$index = 1;
 			$fileName = $infos['filename'];
 			$ext = $infos['extension'];
@@ -79,17 +79,17 @@ class lcImageDataType implements lcDatatypeInterface
 			$fileInfo['created'] = date("d-m-Y",time());
 
 			$this->value->setFileInfos($fileInfo);
-						
+
 			$this->storeUploadedFile($fileInfo['tmp_name'], $filePath, $cleanFileName);
-							
+
 			$contentAttribute->setAttribute('ltxt_value',$this->value->getXmlFileInfo());
 		}
-			
+
 	}
 
 	public function path(& $contentAttribute)
 	{
-		
+
 	}
 
 	/**
@@ -128,7 +128,7 @@ class lcImageDataType implements lcDatatypeInterface
 	{
 		return new lcImage($contentAttribute->attribute('ltxt_value'));
 	}
-	
+
 	public function getHandler()
 	{
 		return new lcImageHandler($this->value);
@@ -143,15 +143,15 @@ class lcImageDataType implements lcDatatypeInterface
 	{
 		$this->value->remove();
 	}
-	
-	public function content()
+
+	public function content(& $contentAttribute)
 	{
 		return new lcImageHandler($this->value);
 	}
-	
+
 	public function hasContent()
 	{
-		return ($this->value instanceof lcImage and $this->value->hasFile())?true:false;	
+		return ($this->value instanceof lcImage and $this->value->hasFile())?true:false;
 	}
 
 

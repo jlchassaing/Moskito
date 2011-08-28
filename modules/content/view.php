@@ -21,9 +21,13 @@ if ($viewMode AND $nodeID)
 	{
 		$classIdentifier = $contentObject->attribute('class_identifier');
 		$templateRule = lcTemplateRule::getInstance();
-		$rulesSet = array('class'=>$classIdentifier,
-					  'NodeId' => $nodeID);
+		$rulesSet = array('Class'    => $classIdentifier,
+					  	  'NodeId'   => $nodeID,
+		                  'Action'   => 'content/view.tpl.php');
 		$tplPath = $templateRule->getTemplate($rulesSet);
+
+		if ($tplPath == "")
+		    $tplPath = "content/view.tpl.php";
 		$tpl->setVariable("node_id",$nodeID);
 		$tpl->setVariable("object", $contentObject);
 		if (isset($tplPath))
@@ -33,9 +37,9 @@ if ($viewMode AND $nodeID)
 	}
 	else
 	{
-		$Result['content'] = $tpl->fetch($tplPath);	
+		$Result['content'] = $tpl->fetch($tplPath);
 	}
-	
+
 }
 else
 {
