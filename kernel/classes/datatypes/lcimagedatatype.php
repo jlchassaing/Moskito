@@ -144,7 +144,7 @@ class lcImageDataType implements lcDatatypeInterface
 		$this->value->remove();
 	}
 
-	public function content(& $contentAttribute)
+	public function content()
 	{
 		return new lcImageHandler($this->value);
 	}

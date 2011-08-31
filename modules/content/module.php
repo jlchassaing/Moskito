@@ -27,6 +27,7 @@ $viewList['googlesitemap']= array('script'=>'googlesitemap.php',
 $viewList['select']= array('script'=>'select.php',
 						 'ordered_params'=>array("NodeId"),
                          'function' => 'select');
+$viewList['form']= array('script'=>'form.php');
 
 $functionList = array();
 $functionList['read'] = array();
