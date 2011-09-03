@@ -20,6 +20,7 @@
 
 <?php $parent=0;$path=0; $prec=0;$parentArray=array();$decal = "";?>
 <div class="field">
+Ajouter dans le menu <input type="checkbox" name="AddToAMenu" />
 <label>Position dans le menu : parent</label>
 <select name="MenuParentValue">
 <option value="0" <?php if ($menu['parent_node_id'] == 0) echo "SELECTED";?> >Root</option>
@@ -28,7 +29,7 @@
 $decal=""; for ($i=2;$i<count($path);$i++) $decal = $decal."---";?>
 
 
-<option <?php if ($menu['parent_node_id'] == $item['node_id']) echo "SELECTED";?> value="<?php echo $item['node_id'];?>"><?php echo $decal.' '.$item['object_name'];?></option>
+<option <?php if ($menu['parent_node_id'] == $item['node_id']) echo "SELECTED";?> value="<?php echo $item['node_id'];?>"><?php echo $decal.' '.$item['name'];?></option>
 
 
 <?php endforeach;?>

@@ -8,4 +8,11 @@
 
 <h1><?php echo $object->attribute('name');?></h1>
 
-<?php echo $dataMap['description']->content()?>
+
+
+
+<?php foreach ($object->dataMap() as $field):?>
+
+<?php $this->attributeView("field/view",$field);?>
+
+<?php endforeach;?>

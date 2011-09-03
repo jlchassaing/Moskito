@@ -37,9 +37,9 @@ class lcFile
 		}
 
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Chek if a file has been set for this content
 	 */
 	public function hasFile()
@@ -53,11 +53,11 @@ class lcFile
 			return false;
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Return the full image path
-	 * The path is built 
+	 * The path is built
 	 */
 	public function path()
 	{
@@ -66,7 +66,12 @@ class lcFile
 		$splitedDate = explode("-",$this->fileInfos['created']);
 		return $storageDir."/file/".$splitedDate[2]."/".$splitedDate[1]."/".$splitedDate[0];
 	}
-	
+
+	public function getHandler()
+	{
+	    return new lcFileHandler($this);
+	}
+
 	public function attribute($name)
 	{
 		if (isset($this->fileInfos[$name]))
@@ -80,14 +85,16 @@ class lcFile
 	{
 		return $this->fileInfos['filename'];
 	}
-	
+
 	public function fullPath()
 	{
-		return $this->path()."/".$this->fileName();
+		return lcHTTPTool::buildUrl($this->path()."/".$this->fileName(),true,false);
 	}
 
+
+
 	/**
-	 * 
+	 *
 	 * return the xmlString of file Infos
 	 */
 	public function getXmlFileInfo()
@@ -119,14 +126,14 @@ class lcFile
 			$xmlData .= "</file>\n";
 			$this->xmlFileInfo = $xmlData;
 		}
-		else 
+		else
 		{
 			return false;
 		}
 
 	}
-	
-	
+
+
 
 
 }

@@ -25,6 +25,7 @@ div.edit div.field{border: 1px solid #c1c1c1;background:white;padding:10px}
 div.edit label{font-weight:bold}
 div.edit input {margin-top:5px;padding:3px;border:1px solid #c1c1c1}
 div.edit input[type=text]{width:878px}
+div.edit input[type=text].smallinput{width:15px}
 div.edit textarea{width:100%}
 div.edit table.mceLayout{border:1px solid #c1c1c1;margin-top:5px}
 div#topmenu {
@@ -59,6 +60,7 @@ div#user-login label {
 
 input[type=submit]{border:1px solid #fe0000;background-color: #2765b6; color:white;font-weight:bold }
 input[type=submit]:hover{background-color:#ccc; color:#375D81}
+
 div#header{background: transparent url(../images/moskito/fond-header.jpg);height:146px;position:relative}
 div#title{float:left;margin:30px 0 0 30px}
 div#user{float:right;color:white; margin-right:10px;text-shadow: 2px 1px 3px black;}

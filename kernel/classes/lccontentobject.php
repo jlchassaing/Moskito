@@ -241,7 +241,15 @@ class lcContentObject extends lcPersistent
 		$lang = $GLOBALS['SETTINGS']['currentLanguage'];
 
 		$contentMenu = lcContentMenu::fetchByObjectId($this->id, $lang);
-		$path = $contentMenu['path_string'];
+		if (isset($contentMenu['path_string']))
+		{
+		    $path = $contentMenu['path_string'];
+		}
+		else
+		{
+		    $path = "object/view/full/".$this->id;
+		}
+
 		$url = lcHTTPTool::buildUrl($path);
 		return $url;
 	}

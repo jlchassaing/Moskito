@@ -17,7 +17,7 @@
 <?php $path=explode("/", $item['path_ids']);$parent = (int) $item['parent_node_id'];?>
 
 <?php $decal=""; for ($i=2;$i<count($path);$i++) $decal = $decal."---";?>
-<option value="<?php echo $item['node_id'];?>"><?php echo $decal.' '.$item['object_name'];?></option>
+<option value="<?php echo $item['node_id'];?>"><?php echo $decal.' '.$item['name'];?></option>
 
 <?php $prec = count($path);?>
 <?php endforeach;?>

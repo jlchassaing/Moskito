@@ -19,6 +19,6 @@
 RewriteEngine On
 
 
-RewriteRule !\.(gif|jpe?g|png|css|js|html|htm)|var(.+)storage.pdf(.+)\.pdf$ index.php
+RewriteRule !\.(gif|jpe?g|png|css|js|html|htm)|var(.+)/(.+)\.pdf$ index.php
 
 DirectoryIndex index.php

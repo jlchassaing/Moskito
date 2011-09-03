@@ -1,4 +1,11 @@
-<h2>Gestion du menu</h2>
+
+<div class="borderbox">
+
+<div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle">Gestion du menu</h2></div></div></div>
+<div class="ml"><div class="mr"><div class="mc">
+
+<div class="content edit">
+
 <form action="<?php $this->url('/content/menu');?>" method="post" >
 <?php if (count($menu) == 0):?>
 <p>Aucun menu</p>
@@ -24,9 +31,9 @@
 <li>
 
 <?php echo $item['name'];?>
- <input type="text" value="<?php echo substr($item['sort_val'],-2);?>" name="MenuNewSortValue[]" size="2" />
-<a href="<?php $this->url('content/menu/edit/'.$item['id']);?>" ><img src="<?php $this->designurl('images/modifier.png');?>" alt="modifier" /></a>
-					 <a href="<?php $this->url('content/menu/remove/'.$item['id']);?>"><img src="<?php $this->designurl('images/supprimer.png');?>" alt="supprimer" /></a>
+ <input type="text" value="<?php echo substr($item['sort_val'],-2);?>" name="MenuNewSortValue[]" size="2"  class="smallinput"/>
+<a href="<?php $this->url('content/menu/edit/'.$item['id']);?>" ><img src="<?php $this->designurl('images/icones/edit-18x18.png');?>" alt="modifier" /></a>
+					 <a href="<?php $this->url('content/menu/remove/'.$item['id']);?>"><img src="<?php $this->designurl('images/icones/delete-18x18.png');?>" alt="supprimer" /></a>
 <input type="hidden" name="MenuIdValue[]" value="<?php echo $item['id'];?>" />
 <input type="hidden" name="MenuIdOrder[]" value="<?php $key++; echo $key;?>" />
 <input type="hidden" name="MenuSortValue[]" value="<?php echo substr($item['sort_val'],-2);?>" />
@@ -40,3 +47,10 @@
 <input type="submit" name="SaveMenuUpdates" value="Enregister" />
 </div>
 </form>
+
+</div>
+
+</div></div></div>
+    <div class="bl"><div class="br"><div class="bc"></div></div></div>
+
+</div>

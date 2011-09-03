@@ -113,16 +113,13 @@ class lcContentMenu extends lcPersistent
 
         }
 
-        $selectFields = "contentmenu.id, menu.node_id, (select count(*) from menu as menu2 where menu2.parent_node_id = menu.node_id) as children_count,
+         $selectFields = "contentmenu.id, menu.node_id, (select count(*) from menu as menu2 where menu2.parent_node_id = menu.node_id) as children_count,
                                contentmenu.contentobject_id, contentmenu.name, contentmenu.path_string, contentmenu.lang, ".
-       				        " menu.parent_node_id, menu.path_ids, menu.sort_val, contentobject_attributes.txt_value as object_name, contentobjects.created";
+       				        " menu.parent_node_id, menu.path_ids, menu.sort_val, contentobjects.created";
 
-        $query = "SELECT $selectFields FROM contentmenu,contentobjects, menu, contentobject_attributes ".
+        $query = "SELECT $selectFields FROM contentmenu,contentobjects, menu ".
 				 "WHERE contentmenu.node_id = menu.node_id ".
 			     "AND contentmenu.lang = '$lang' ".
-				 "AND contentobject_attributes.lang = contentmenu.lang ".
-				 "AND contentobject_attributes.contentobject_id = contentmenu.contentobject_id ".
-		         "AND contentobject_attributes.identifier = 'name' ".
 				 "AND contentobjects.id = contentmenu.contentobject_id ".
         $nodeCond .
 			     "ORDER BY menu.sort_val ";

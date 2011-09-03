@@ -128,7 +128,7 @@ class lcHTTPTool
     }
 
 
-    public static function buildUrl($path,$toFile=false)
+    public static function buildUrl($path,$toFile=false,$full=false)
     {
         $access = "";
         $accessLoader = lcAccess::getInstance();
@@ -191,16 +191,21 @@ class lcHTTPTool
 
         if ($toFile)
         {
-            $fullUrl = $host.$script.$path;
+            $fullUrl = $script.$path;
             $fullUrl = str_replace("index.php", "", $fullUrl);
         }
         else
         {
-            $fullUrl = $host.$script.$access.$path;
+            //$fullUrl = $host.$script.$access.$path;
+            $fullUrl = $script.$access.$path;
         }
 
         $fullUrl = str_replace("//", "/", $fullUrl);
-        return "http://".$fullUrl;
+        if ($full)
+        {
+            $fullUrl = "http://".$host.$fullUrl;
+        }
+        return $fullUrl;
     }
 
 

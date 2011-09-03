@@ -42,21 +42,18 @@ if ($http->hasPostVariable("CreateButton"))
 			}
 		}
 		$newObject->store();
+        if ($http->hasPostVariable("AddToAMenu") and $http->hasPostVariable("AddToAMenu") == "1" )
+        {
+            if ($http->hasPostVariable("MenuParentValue"))
+            {
+                $parentId = $http->postVariable("MenuParentValue");
 
-		if ($http->hasPostVariable("MenuParentValue"))
-		{
-			$parentId = $http->postVariable("MenuParentValue");
-			$menuName = "";
-			/*if ($http->hasPostVariable("MenuNameValue"))
-			{
-				$menuName = $http->postVariable("MenuNameValue");
-			}*/
-			if ($menuName == "")
-			{
-				$menuName = $newObject->attribute('object_name');
-			}
-			$NewMenu = lcContentMenu::addMenuTo($parentId,$menuName,$newObject->attribute('id'),$lang);
-		}
+                $menuName = $newObject->attribute('object_name');
+
+                $NewMenu = lcContentMenu::addMenuTo($parentId,$menuName,$newObject->attribute('id'),$lang);
+            }
+        }
+
 		$Module->redirectToModule('content', 'manage');
 	}
 }
