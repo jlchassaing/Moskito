@@ -88,7 +88,12 @@ class lcFile
 
 	public function fullPath()
 	{
-		return lcHTTPTool::buildUrl($this->path()."/".$this->fileName(),true,false);
+		return $this->path()."/".$this->fileName();
+	}
+
+	public function url()
+	{
+	    return lcHTTPTool::buildUrl($this->path()."/".$this->fileName(),true,false);
 	}
 
 

@@ -5,9 +5,9 @@
 	<meta name="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="Content-language" content="fr-FR" />
 	<?php lcStyleLoader::load('litecms.css');?>
-	
+
 	<?php lcScriptLoader::load();?>
-	
+
 </head>
 <body>
 
@@ -28,6 +28,14 @@
 	<div id="title">
 	<h1><a href="<?php $this->url('/back');?>" ><img src="<?php $this->designurl("images/moskito.png");?>" /></a></h1>
 	</div>
+
+	<div id="user">
+		<?php $user = lcUser::getCurrentUser()?>
+		<?php if ($user):?>
+		<p>Bonjour <span class="username"> <?php echo $user->attribute('login');?></span> | paramètres | <a href="<?php $this->url('/user/logout');?>" class="disconnect" >se déconnecter</a></p>
+		<?php endif;?>
+
+</div>
 </div>
 <?php echo $MainResult;?>
 

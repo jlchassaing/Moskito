@@ -16,6 +16,10 @@
 <input type="hidden" name="redirect" value="<?php echo $_SESSION['last_request'];?>" />
 <?php endif;?>
 
+<?php if (isset($redirect_to)): ?>
+<input type="hidden" name="redirect" value="<?php echo $redirect_to;?>" />
+<?php endif;?>
+
 <div class="buttons">
 	<input type="submit" name="LoginButton" value="Enter" />
 </div>

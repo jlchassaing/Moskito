@@ -56,16 +56,13 @@ class lcTemplate
         return false;
     }
 
-    static function templateRun($templateFile,$params)
+    public function templateRun($templateFile,$params)
     {
         if (is_file($templateFile)) {
             ob_start();
             if (is_array($params))
             {
-                /*foreach ($params as $name=>$value)
-                {
-                    ${$name}=$value;
-                }*/
+
                 extract($params);
             }
 
@@ -205,7 +202,7 @@ class lcTemplate
                 lcDebug::write('NOTICE', "loading template : $tpl ");
                 if ($tpl)
                 {
-                    echo self::templateRun($tpl, $paramList);
+                    echo $this->templateRun($tpl, $paramList);
                 }
                 else
                 {

@@ -30,7 +30,7 @@ $viewList['select']= array('script'=>'select.php',
 $viewList['form']= array('script'=>'form.php');
 
 $functionList = array();
-$functionList['read'] = array();
+$functionList['read'] = array('section' => array('lcSection','getList','id','name'));
 $functionList['edit'] = array();
 $functionList['remove'] = array();
 $functionList['create'] = array();

@@ -19,7 +19,7 @@ if ($http->hasPostVariable("SaveButton"))
             lcDebug::write("Error", "A role already existe with the name : $newRoleName");
             $errorMsg = "A role already existe with the name : $newRoleName";
         }
-        
+
     }
     else
     {
@@ -30,17 +30,17 @@ if ($http->hasPostVariable("SaveButton"))
     {
        $Module->redirectToModule('role','list');
     }
-    else 
+    else
     {
          $tpl->setVariable("error", $errorMsg);
-         $Result['content'] = $tpl->fetch("roles/add.tpl.php");
+         $Result['content'] = $tpl->fetch("roles/edit.tpl.php");
     }
 }
 else
 {
-   
 
-    $Result['content'] = $tpl->fetch("roles/add.tpl.php");
+
+    $Result['content'] = $tpl->fetch("roles/edit.tpl.php");
 
 }
 

@@ -17,25 +17,23 @@
 
 <div class="table-content">
 
-<form name="creat" action="<?php $this->url('/users/action');?>" method="post" >
+<form name="creat" action="<?php $this->url('/user/action');?>" method="post" >
 
-<div class="buttons">
 
-</div>
-</form>
+
 <table>
 <tr>
-<th>login</th><th>role </th><th>actions</th>
+<th class="first">login</th><th>role </th><th class="actions" >actions</th>
 </tr>
-<?php foreach ($users as $item):?>
+<?php foreach ($users as $key=>$item):?>
 
-<tr>
-<td><a href="<?php $this->url('user/view/'.$item->attribute('login'));?>" title="preview" ><?php echo $item->attribute('login');?></a></td>
+<tr class="<?php if ($key % 2 == 0) echo "dark";else echo "light";?>">
+<td class="first"><a href="<?php $this->url('user/view/'.$item->attribute('login'));?>" title="preview" ><?php echo $item->attribute('login');?></a></td>
 <td><?php echo $item->attribute('role');?></td>
-<td>
-<a href="<?php $this->url('users/edit/'.$item->attribute('id'));?>" title="Edit the user" >
+<td class="last">
+<a href="<?php $this->url('user/edit/'.$item->attribute('id'));?>" title="Edit the user" >
 <img src="<?php $this->designurl('images/icones/edit-18x18.png');?>" alt="Edit" /></a>
-<a href="<?php $this->url("users/delete/".$item->attribute('id')."/".$item->attribute('lang'));?>" title="Remove" >
+<a href="<?php $this->url("user/delete/".$item->attribute('id'));?>" title="Remove" >
 <img src="<?php $this->designurl('images/icones/delete-18x18.png');?>" alt="Remove the content" /></a>
 
 </td>
@@ -43,7 +41,7 @@
 
 <?php endforeach;?>
 
-<tr class="lastline light buttons">
+<tr class="lastline buttons">
 <td colspan="3" class="first last">
 <div class=buttons>
 <input type="submit" name="CreateUserButton" value="Ajouter un utilisateur" />
@@ -52,6 +50,7 @@
 </tr>
 
 </table>
+</form>
 
 </div>
 

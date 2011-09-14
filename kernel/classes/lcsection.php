@@ -39,6 +39,17 @@ class lcSection extends lcPersistent
         );
     }
 
+    public static function getList()
+    {
+        return self::fetch(self::definition(),
+                           null,
+                           null,
+                           null,
+                           null,
+                           false,
+                           true);
+    }
+
 
     public function addTreeInSection($nodeId)
     {
@@ -47,16 +58,16 @@ class lcSection extends lcPersistent
 
     public static function fetchAll()
     {
-        $db = lcDB::getInstance();
-
-        $query = "SELECT sections.*, count(menu.section_id) as count_nodes ".
-                 "FROM sections, menu ".
-                 "WHERE menu.section_id = sections.id";
-
-        $list = $db->arrayQuery($query);
+        $list = self::fetch(self::definition(),null,null,null,null,true,true);
 
         return $list;
 
+    }
+
+    public function elementsCount()
+    {
+       $count= self::fetchCount(lcMenu::definition(),array('section_id' => $this->attribute('id')));
+       return $count;
     }
 
     public static function fetchByName($sectionName)

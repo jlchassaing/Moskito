@@ -19,7 +19,7 @@
 
 <tr class="<?php if ($key%2 == 0) echo 'dark'; else echo 'light';?>">
 <td class="first"><input type="checkbox" value="<?php echo $menu['node_id']?>" name="NodeId[]" /></td>
-<td class="last"><?php echo $menu['object_name']; ?></td>
+<td class="last"><?php echo $menu['name']; ?></td>
 
 </tr>
 

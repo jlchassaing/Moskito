@@ -81,6 +81,8 @@ class lcHTTPTool
     {
         $result= array();
 
+        // TODO : rewrite this part
+
         $result['host'] = $_SERVER['HTTP_HOST'];
         $scriptName = substr($_SERVER['SCRIPT_NAME'],1);
         $scriptNameArray = explode("/",$scriptName);
@@ -89,20 +91,30 @@ class lcHTTPTool
         {
             $len = strlen($_SERVER['QUERY_STRING']) *-1;
             $request = substr($request,0, $len);
+            $request = trim(str_replace("?", "", $request));
         }
 
-        $pos = false;
-        $i = 0;
-        while(($pos = stripos($request,$scriptNameArray[$i])) !== false)
+        if (substr($request,1) == $scriptName)
         {
-            $request = substr($request, $pos + strlen($scriptNameArray[$i]));
-
-            $i++;
-            if (!isset($scriptNameArray[$i]))
+            $request = "/";
+        }
+        else
+        {
+            $pos = false;
+            $i = 0;
+            while(($pos = stripos($request,$scriptNameArray[$i])) !== false)
             {
-                break;
+                $request = substr($request, $pos + strlen($scriptNameArray[$i]));
+
+                $i++;
+                if (!isset($scriptNameArray[$i]))
+                {
+                    break;
+                }
             }
         }
+
+
 
         $result['fullrequest'] = (substr($request, -1) != "/")?$request."/":$request;
         $result['fullrequest'] = str_replace("?", "", $result['fullrequest']);

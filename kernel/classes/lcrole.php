@@ -103,25 +103,57 @@ class lcRole extends lcPersistent
     public function hasAccessTo(& $module)
     {
         $hasAccess = false;
-        if ($this->rules[0]->attribute('module') == 'all' and $this->rules[0]->attribute('function') == 'all')
+        if (isset($this->rules[0]))
         {
-            $hasAccess = true;
-        }
-        else
-        {
-            foreach ($this->rules as $rule)
+            if ($this->rules[0]->attribute('module') == 'all' and $this->rules[0]->attribute('function') == 'all')
             {
-                if ($rule->attribute('module') == $module->module)
+                $hasAccess = true;
+            }
+            else
+            {
+                foreach ($this->rules as $rule)
                 {
-                    if ($rule->attribute('function') == $module->functionName())
+                    if ($rule->attribute('module') == $module->module)
                     {
-                        $hasAccess = true;
+                        if ($rule->attribute('function') == $module->functionName())
+                        {
+                            $RuleParams = $rule->attribute('params');
+                            if (is_array($RuleParams))
+                            {
+                                $viewFunctionParams = $module->getFunctionViewParams();
+                                foreach ($RuleParams as $key=>$value)
+                                {
+                                    $list = $viewFunctionParams[$key][0]::$viewFunctionParams[$key][1]();
+                                    if (isset($module->params['NodeId']))
+                                    {
+                                        if (lcContentMenu::hasSection($value,$module->params['NodeId']))
+                                        {
+                                            $hasAccess = true;
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            $hasAccess = true;
+                        }
                     }
                 }
             }
         }
 
+
         return $hasAccess;
+    }
+
+    public function delete()
+    {
+       lcRule::remove(lcRule::definition(),array('role_id' => $this->id));
+
+        parent::remove(self::definition(),array('id'=> $this->id));
     }
 
 

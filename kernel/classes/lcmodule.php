@@ -37,8 +37,10 @@ class lcModule
     */
     public static function loadModule($module)
     {
-
-        return new lcModule($module);
+        if (self::moduleExists($module))
+            return new lcModule($module);
+        else
+            return null;
 
     }
 
@@ -70,10 +72,33 @@ class lcModule
             include $modulePath.'/module.php';
 
             $this->viewList = $viewList;
-            $this->conf = $moduleConf;
+            $this->functions = isset($functionList)?$functionList:null;
+           // $this->conf = $moduleConf;
+            $this->setDefaultView();
             return true;
         }
 
+    }
+
+    public static function moduleExists($moduleName)
+    {
+        $modulePath = "modules/$moduleName";
+        if (file_exists($modulePath.'/module.php'))
+            return true;
+        else
+            return false;
+
+    }
+    public function getFunctionViewParams()
+    {
+        $params = false;
+        if (isset($this->view))
+        {
+            if (isset($this->viewList[$this->view]['function']))
+                $params = $this->functions[$this->viewList[$this->view]['function']];
+
+        }
+        return $params;
     }
 
     /*!
@@ -101,7 +126,7 @@ class lcModule
     */
     public function setDefaultView()
     {
-        $this->view = $this->conf['defaultView'];
+        $this->loadView($this->conf['defaultView']);
     }
 
     /*!
@@ -223,13 +248,13 @@ class lcModule
             if (is_null($params))
             {
                 $this->params = $this->loadParams();
-                $this->params['Module'] = $this;
             }
             else
             {
                 $this->params = $params;
-                $this->params['Module'] = $this;
+
             }
+            $this->params['Module'] = $this;
             return true;
 
         }

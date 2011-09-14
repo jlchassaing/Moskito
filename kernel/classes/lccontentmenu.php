@@ -487,6 +487,15 @@ class lcContentMenu extends lcPersistent
 
     }
 
+    public static function hasSection($section_id,$nodeId)
+    {
+        $count = self::fetchCount(lcMenu::definition(),
+                                  array('section_id' => $section_id,
+                          			    'node_id' => $nodeId)
+                    );
+        return ($count > 0)?true:false;
+    }
+
 
 
 

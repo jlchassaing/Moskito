@@ -1,7 +1,7 @@
 <?php
 
 /*!
- 
+
  \class lcImageHandler lcimagehandler.php
  \version  0.1
  *
@@ -38,7 +38,7 @@ class lcImageHandler
         {
 
         }
-        return "/".$this->aliasImagePath;
+        return lcHTTPTool::buildUrl("/".$this->aliasImagePath,true,false);
 
     }
 
@@ -52,7 +52,7 @@ class lcImageHandler
         $rootDir = $GLOBALS['SETTINGS']['siteRootDir'];
         $this->aliasImagePath = $this->image->path() ."/". $aliasFileName;
 
-         
+
 
     }
 
@@ -75,24 +75,24 @@ class lcImageHandler
             {
                 if ($imageInfo[0] != $aliasSettings['width'])
                 {
-                     $return = false;   
+                     $return = false;
                 }
             }
-            else 
+            else
             {
                 if ($imageInfo[1] != $aliasSettings['height'])
                 {
                     $return = false;
                 }
             }
-            
+
             if (!$return)
             {
                 unlink($filePath);
-                
+
             }
             return $return;
-                
+
         }
         else
         {
@@ -102,10 +102,10 @@ class lcImageHandler
 
     public function getAliasSettings($alias)
     {
-       
+
         if (!isset($this->aliasSettings[$alias]))
         {
-            
+
             $settings = lcSettings::getInstance("image");
             if ($settings->hasValue("AliasList", "AliasArray"))
             {

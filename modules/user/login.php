@@ -55,6 +55,10 @@ if ($http->hasPostVariable('LoginButton'))
 else
 {
 	$tpl = new lcTemplate();
+	if (isset($Params['RedirectTo']))
+	{
+	    $tpl->setVariable("redirect_to", $Params['RedirectTo']);
+	}
 	$Result['layout'] = "userlayout.tpl.php";
 	$Result['content'] = $tpl->fetch('user/login.tpl.php');
 }

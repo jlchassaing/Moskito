@@ -72,6 +72,21 @@ elseif($http->hasPostVariable("SaveRuleButton"))
                  if (count($functionList[$functionName]) != 0)
                  {
                      /// manage rule params
+                     if (is_array($functionList[$functionName]))
+                     {
+                         $functionParams = array();
+                         foreach ($functionList[$functionName] as $key=>$filter)
+                         {
+                             $functionParams[$key]['list'] = $filter[0]::$filter[1]();
+                             $functionParams[$key]['keys'] = array($filter[2],$filter[3]);
+                         }
+                         $tpl->setVariable("roleId", $roleId);
+                         $tpl->setVariable("roleAddPhase", 3);
+                         $tpl->setVariable("moduleName",$moduleName);
+                         $tpl->setVariable("functionName",$functionName);
+                         $tpl->setVariable("functionParams",$functionParams);
+                         $Result['content'] = $tpl->fetch("roles/addrule.tpl.php");
+                     }
                  }
                  else
                  {
@@ -79,6 +94,27 @@ elseif($http->hasPostVariable("SaveRuleButton"))
                  }
             }
         }
+        elseif ($process == 3)
+        {
+            $moduleName = $http->postVariable("ModuleNameValue");
+            $functionName = $http->postVariable("FunctionNameValue");
+            if ($http->hasPostVariable("paramFieldList"))
+            {
+                $paramFields = $http->postVariable("paramFieldList");
+                if (is_array($paramFields))
+                {
+                    $parmas = array();
+                    foreach($paramFields as $field)
+                    {
+                        $type = substr($field, 6);
+                        $paramFieldValue = $http->postVariable($field);
+                        $params[$type] = is_array($paramFieldValue)?implode(';',$paramFieldValue):$paramFieldValue;
+                    }
+                }
+            }
+            $saveRule = true;
+        }
+
     }
 
     if ($saveRule)
@@ -97,10 +133,35 @@ elseif($http->hasPostVariable("SaveRuleButton"))
 
 
 }
-elseif($http->hasPostVariable("deleteSelectedButton"))
+elseif($http->hasPostVariable("deleteSelectedRuleButton"))
 {
+    $roleId = false;
+    if ($http->hasPostvariable("RoleIdValue"))
+    {
+        $roleId = $http->postvariable("RoleIdValue");
+    }
+    else
+    {
+        $errorMsg[] = "No role defined!";
+
+    }
+    $ruleList = false;
+    if ($http->hasPostvariable("ruleId"))
+    {
+        $ruleList = $http->postvariable("ruleId");
+    }
+    if ($ruleList and $roleId)
+    {
+        lcRule::remove(lcRule::definition(),array('id' => $ruleList,'role_id'=>$roleId));
+    }
+
 
 }
+elseif ($http->hasPostVariable("AddNewRole"))
+{
+    $Module->redirectToModule('role','edit');
+}
+
 else
 {
     $roleList = lcRole::fetch(lcRole::definition(),null,null,null,null,true,true);

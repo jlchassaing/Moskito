@@ -28,9 +28,10 @@
 </div>
 <div id="topmenu">
 <ul>
-<li><a href="<?php $this->url('/content/menu/manage');?>" >Gestion du menu</a></li>
-<li><a href="<?php $this->url('/content/manage');?>" >Gestion du contenu</a></li>
-<li><a href="<?php $this->url('/user/manage');?>" >Gestion des utilisateurs</a></li>
+<li><a href="<?php $this->url('/content/menu/manage');?>" >Menu</a></li>
+<li><a href="<?php $this->url('/content/manage');?>" >Contenu</a></li>
+<li><a href="<?php $this->url('/user/manage');?>" >Utilisateurs</a></li>
+<li><a href="<?php $this->url('/section/list');?>" >Sections</a></li>
 </ul>
 </div>
 </div>

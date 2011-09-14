@@ -58,7 +58,13 @@ class lcXmlblocDataType implements lcDatatypeInterface
 
 	public function content()
 	{
-		return $this->value;
+		//return $this->value;
+
+		$allowedTags='<p><strong><em><u><h1><h2><h3><h4><h5><h6><img>';
+		$allowedTags.='<li><ol><ul><span><div><br><ins><del>';
+		$content = strip_tags(stripslashes($this->value),$allowedTags);
+		return $content;
+
 	}
 
 	public function hasContent()

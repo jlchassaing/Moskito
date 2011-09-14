@@ -97,10 +97,10 @@ class lcUser extends lcPersistent
 	 \param integer $id
 	 \return lcUser
 	 */
-	public static function getById($user_id)
+	public static function getById($user_id,$asObject = true)
 	{
 		$cond = array('id'=>$user_id);
-		$user = self::fetch(self::definition(), $cond,null,null,null,true);
+		$user = self::fetch(self::definition(), $cond,null,null,null,$asObject);
 
 		return $user;
 	}
@@ -139,13 +139,17 @@ class lcUser extends lcPersistent
 		$settings = lcSettings::getInstance();
 		//$currentLoadedModule = $Module->module;
 		//$currentLoadedView = $Module->view;
-        $hasAccess = false;
+		 $hasAccess = false;
+		if($settings->hasValue('UserSettings','DirectAccess'))
+		{
+		    $directAccessRules = $settings->value('UserSettings','DirectAccess');
+		    $rule  = $Module->module."/".$Module->view;
+		    if (in_array($rule, $directAccessRules))
+		        $hasAccess = true;
+		}
 
-        if ($Module->module == "user" and $Module->view == "login")
-        {
-            $hasAccess = true;
-        }
-        else
+
+        if (!$hasAccess)
         {
             $userRole = lcRole::fetchByName($this->role);
             if($userRole)
@@ -159,25 +163,12 @@ class lcUser extends lcPersistent
         }
 
 
-        /*
-		$userLogin = true;
-		if ($currentLoadedModule == 'content' and ($currentLoadedView == 'view' or $currentLoadedView == 'googlesitemap'))
-		{
-			$userLogin = false;
-		}
-		elseif($currentLoadedModule == "error")
-		{
-			$userLogin = false;
-		}
-
-		if (!$userLogin and $settings->value("User", "login"))
-		{
-			$userLogin = true;
-		}
-		*/
-
-
 		return $hasAccess;
+	}
+
+	public function delete()
+	{
+	    $this->remove(self::definition(),array('id'=>$this->attribute('id')));
 	}
 
 

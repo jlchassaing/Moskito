@@ -245,7 +245,18 @@ class lcDB
                 {
                     $isFirstField = false;
                 }
-                if (is_string($value))
+                if (is_array($value))
+                {
+                    $list = "";
+                    foreach ($value as $key=>$item)
+                    {
+                        $list .= ($key > 0)?", ":"";
+                        $list .= (is_numeric($item))?$item:"'$item'";
+
+                    }
+                    $condString ="$key in ($list)";
+                }
+                elseif (is_string($value))
                 {
                     $value = mysql_real_escape_string($value);
                     $compareOperator = "=";
@@ -257,7 +268,7 @@ class lcDB
                 }
                 else
                 {
-                    $condString = "$key = $value";
+                    $condString .= "$key = $value";
                 }
 
             }

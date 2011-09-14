@@ -37,8 +37,12 @@ if ($http->hasPostVariable("SendFormButton"))
         $tpl->setVariable('Object', $contentObject);
         $mailContent = $tpl->fetch('content/mailcontent.tpl.php');
 
+        $mail = new lcMail();
 
-
-
+        $mail->from = $sender;
+        $mail->to = "chassaing.sirpa@wanadoo.fr";
+        $mail->subject = "TEST";
+        $mail->text = $mailContent;
+        $mail->send();
     }
 }

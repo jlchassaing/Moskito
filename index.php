@@ -99,11 +99,11 @@ function getRequestedModule(& $requestArray)
 	else
 	{
 		$Module = lcModule::loadModule($requestArray[0]);
-		$requestArray = array_slice($requestArray, 1);
 
 	}
 	if ($Module instanceof lcModule)
 	{
+	    $requestArray = array_slice($requestArray, 1);
 		if (!isset($requestArray[0]))
 		{
 			$Module->setDefaultView();
@@ -115,8 +115,15 @@ function getRequestedModule(& $requestArray)
 			$requestArray = array_slice($requestArray, 1);
 			$Module->loadView($view);
 		}
+
+	}
+	else
+	{
+	    $Module = lcModule::loadModule("error");
+	    $Module->errorNumber = 30;
 	}
 	return $Module;
+
 }
 
 $Module = false;
@@ -149,6 +156,7 @@ else
 if (!is_object($Module))
 {
 	$Module = getRequestedModule($requestArray);
+
 }
 
 
@@ -175,11 +183,11 @@ else
 }
 
 
-
+lcSession::start();
 
 if ($userLogin)
 {
-		lcSession::start();
+
 
 		// gestion de la session
 
@@ -202,7 +210,9 @@ if (!$user->can($Module))
 if ($Module->isError())
 {
 	$Module->setModule("error");
-	$Module->loadView('display',array('ErrorID'=>$Module->errorNumber));
+	$Params = array('ErrorID'=>$Module->errorNumber,
+	                'RedirectUrl' => $request['fullrequest']);
+	$Module->loadView('display',$Params);
 }
 
 $pageResult = $Module->result();

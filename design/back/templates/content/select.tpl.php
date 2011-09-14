@@ -1,6 +1,6 @@
 <div class="borderbox">
 
-<div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle"><?php if ($parent_title['parent_node_id'] !== false):?><a href="<?php $this->url("content/select/".$parent_title['parent_node_id'])?>" title="previus" class="upper"><img src="<?php $this->designurl("images/icones/top-18x18.png")?>" alt="previus"/></a><?php endif;?> <?php echo $parent_title['object_name'];?> : Selectionnez un contenu</h2></div></div></div>
+<div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle"><?php if ($parent_title['parent_node_id'] !== false):?><a href="<?php $this->url("content/select/".$parent_title['parent_node_id'])?>" title="previus" class="upper"><img src="<?php $this->designurl("images/icones/top-18x18.png")?>" alt="previus"/></a><?php endif;?> <?php echo $parent_title['name'];?> : Selectionnez un contenu</h2></div></div></div>
 <div class="ml"><div class="mr"><div class="mc">
 
 <div class="table-content">
@@ -22,9 +22,9 @@
 <?php $dolink = true;?>
 <td class="last">
 <?php if ($menu['children_count'] > 0): ?>
-<a href="<?php $this->url("content/select/".$menu['node_id'])?>" title="open" ><?php echo $menu['object_name']; ?></a>
+<a href="<?php $this->url("content/select/".$menu['node_id'])?>" title="open" ><?php echo $menu['name']; ?></a>
 <?php else:?>
-<?php echo $menu['object_name']; ?>
+<?php echo $menu['name']; ?>
 <?php endif;?>
 </td>
 </tr>
