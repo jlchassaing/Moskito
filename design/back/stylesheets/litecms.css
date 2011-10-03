@@ -20,6 +20,7 @@ div#edit-menu li form .actions {
 div.field{margin:5px 0;}
 div.field label{display:block}
 div#edit-menu li form .actions input{border:1px solid #183152; color:White;background-color:#375D81}
+div#edit-menu li span{width:18px;display:block;float:left;height:18px;margin:6px 4px 0 0}
 div.field:after, .clear:after{display:block;clear:both;height:0;visibility:hidden;content:"."}
 div.edit div.field{border: 1px solid #c1c1c1;background:white;padding:10px}
 div.edit label{font-weight:bold}

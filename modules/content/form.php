@@ -4,6 +4,9 @@ $Module = $Params['Module'];
 
 $http = lcHTTPTool::getInstance();
 
+$errors = array();
+ $tpl = new lcTemplate();
+
 if ($http->hasPostVariable("SendFormButton"))
 {
     if ($http->hasPostVariable("ObjectIdValue"))
@@ -21,28 +24,63 @@ if ($http->hasPostVariable("SendFormButton"))
             }
         }
 
-        $dataMap = $contentObject->dataMap();
-
-        if (isset($dataMap['recipient']))
+        $captchaMgr = lcCaptcha::getInstance();
+        $validCaptcha = true;
+        if ($captchaMgr->requestHasCaptcha())
         {
-            $recipient = $dataMap['recipient']->content();
+            $validCaptcha = $captchaMgr->check();
         }
 
-        if (isset($dataMap['email']))
+        $recipient = $contentObject->attribute('recipient');
+
+        if (!lcStringTools::isEmail($recipient))
         {
-            $sender = $dataMap['email']->content();
+            $errors['recipient']  = "Recipient email error";
         }
 
-        $tpl = new lcTemplate();
-        $tpl->setVariable('Object', $contentObject);
-        $mailContent = $tpl->fetch('content/mailcontent.tpl.php');
+        $sender = $contentObject->attribute('email');
 
-        $mail = new lcMail();
+        if (!lcStringTools::isEmail($sender))
+        {
+            $errors['email']  = "Sender email error";
+        }
 
-        $mail->from = $sender;
-        $mail->to = "chassaing.sirpa@wanadoo.fr";
-        $mail->subject = "TEST";
-        $mail->text = $mailContent;
-        $mail->send();
+        if (count($errors) == 0)
+        {
+
+            $tpl->setVariable('Object', $contentObject);
+            $mailContent = $tpl->fetch('content/mailcontent.tpl.php');
+
+            $mail = new lcMail();
+
+            $mail->from = $sender;
+            $mail->to = $recipient;
+            $mail->subject = $contentObject->attribute('subject');
+            $mail->text = $mailContent;
+            $mail->send();
+
+            $Result['content'] = $tpl->fetch('content/mailconfirm.tpl.php');
+        }
+        else
+        {
+
+            if ($contentObject instanceof lcContentObject)
+            {
+                $classIdentifier = $contentObject->attribute('class_identifier');
+                $templateRule = lcTemplateRule::getInstance();
+                $rulesSet = array('Class'    => $classIdentifier,
+		                  'Action'   => 'content/view.tpl.php');
+                $tplPath = $templateRule->getTemplate($rulesSet);
+
+                if ($tplPath == "")
+                    $tplPath = "content/view.tpl.php";
+                $tpl->setVariable("errors", $errors);
+                $tpl->setVariable("object", $contentObject);
+                if (isset($tplPath))
+                {
+                    $Result['content'] = $tpl->fetch($tplPath);
+                }
+            }
+        }
     }
 }

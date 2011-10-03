@@ -114,8 +114,20 @@ class Autoloader
 			{
 				$startDir = self::$autoloadSections[$i];
 			}
+			else
+			{
+			    break;
+			}
 		}
-		return array("path" => $classPath, "dir" => $startDir);
+		if ($classPath !== false)
+		{
+		    return array("path" => $classPath, "dir" => $startDir);
+		}
+		else
+		{
+		    return false;
+		}
+
 	}
 
 	/*!
@@ -136,7 +148,14 @@ class Autoloader
 				$autoloader->registerClassPathInFile($className, $classPath);
 			}
 		}
-		require_once $classPath["path"];
+		if (isset($classPath["path"]))
+		{
+		    require_once $classPath["path"];
+		}
+		else
+		{
+		    lcDebug::write("ERROR", "Could not load class . $className");
+		}
 	}
 
 	/*!

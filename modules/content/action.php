@@ -23,7 +23,7 @@ if ($http->hasPostVariable("EditButton"))
 		}
 
 		$Module->redirectToModule('content','edit',array('ObjectId' => $objectID,'Lang'=>$lang));
-		
+
 	}
 
 }
@@ -47,8 +47,8 @@ elseif($http->hasPostVariable("RemoveButton"))
 	if ($http->hasPostVariable("ContentObjectIDValue"))
 	{
 		$objectID = $http->postVariable("ContentObjectIDValue");
-		
-		$menuList = lcContentMenu::fetchByObjectId($objectID,null,true,true);
+
+		$menuList = lcContentMenu::fetchMenuByObjectId($objectID,null,true,true);
 		foreach ($menuList as $menu)
 		{
 			$object = lcContentObject::fetchByNodeId($menu['node_id'],$menu['lang'],true);

@@ -289,7 +289,7 @@ class lcContentMenu extends lcPersistent
     \param boolean $returnlist if set to true the even if there is one result it will
     be returned in an array.
     */
-    public static function fetchByObjectId($objectId,$lang = null,$asObject = false,$returnlist = false)
+    public static function fetchMenuByObjectId($objectId,$lang = null,$asObject = false,$returnlist = false)
     {
         $cond = array('contentobject_id'=>$objectId);
         if (!is_null($lang))
@@ -322,6 +322,25 @@ class lcContentMenu extends lcPersistent
             return $result;
         }
 
+    }
+
+    public static function fetchByObjectId($objectId,$lang = null,$asObject = false,$returnlist = false)
+    {
+        $cond = array('contentobject_id'=>$objectId);
+        $object = self::fetch(self::definition(),$cond,null,null,null,true,false);
+        if ($object instanceof lcContentMenu)
+        {
+            return $object;
+        }
+         else
+         {
+             return false;
+         }
+    }
+
+    public static function fetchAll($asObject = true)
+    {
+        return self::fetch(self::definition(),null,null,null,null,$asObject,true);
     }
 
     /*!

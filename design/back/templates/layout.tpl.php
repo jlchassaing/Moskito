@@ -32,6 +32,7 @@
 <li><a href="<?php $this->url('/content/manage');?>" >Contenu</a></li>
 <li><a href="<?php $this->url('/user/manage');?>" >Utilisateurs</a></li>
 <li><a href="<?php $this->url('/section/list');?>" >Sections</a></li>
+<li><a href="<?php $this->url('/setup/upgrade');?>" >Setup</a></li>
 </ul>
 </div>
 </div>

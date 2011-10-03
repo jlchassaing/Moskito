@@ -1,0 +1,10 @@
+<?php $disabled = "";
+        if (isset($data['FormField']) and $data['FormField'] )
+        $disabled = "disabled";
+      else
+        $disabled = "";
+?>
+<div class="field">
+<label for="field_<?php echo $data['Identifier'];?>"><?php echo $data['Name'];?></label>
+<textarea name="field_<?php echo $data['Identifier']."_".$data['DataType'];?>" <?php echo $disabled;?>  ></textarea>
+</div>

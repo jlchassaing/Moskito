@@ -73,7 +73,7 @@ class lcModule
 
             $this->viewList = $viewList;
             $this->functions = isset($functionList)?$functionList:null;
-           // $this->conf = $moduleConf;
+            $this->conf = $moduleConf;
             $this->setDefaultView();
             return true;
         }

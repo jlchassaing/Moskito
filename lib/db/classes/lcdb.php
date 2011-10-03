@@ -151,6 +151,8 @@ class lcDB
 
     }
 
+
+
     public function query($query)
     {
         $result = mysql_query($query,$this->connection);

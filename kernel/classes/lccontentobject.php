@@ -92,7 +92,7 @@ class lcContentObject extends lcPersistent
 
 	public function path()
 	{
-	    $contentMenu = lcContentMenu::fetchByObjectId($this->id,$this->lang,false);
+	    $contentMenu = lcContentMenu::fetchMenuByObjectId($this->id,$this->lang,false);
 	    return $contentMenu['path_string'];
 	}
 
@@ -226,10 +226,32 @@ class lcContentObject extends lcPersistent
 			/*
 			 $this->object_name =  $this->makeNormName($field);
 			 */
+            $index = 1;
+            while ($this->nameExists($field))
+            {
+                $field .= "_". $index;
+                $index++;
+            }
 			$this->object_name =  $field;
 		}
+		return $this->object_name;
 
 
+	}
+
+	public function nameExists($name)
+	{
+	    $db = lcDB::getInstance();
+	    $query = "SELECT count(*) as nb from contentobjects where object_name='$name'";
+	    $res = $db->arrayQuery($query);
+	    if ($res[0]['nb'] > 0)
+	    {
+	        return true;
+	    }
+	    else
+	    {
+	        return false;
+	    }
 	}
 
 	/*!
@@ -240,7 +262,7 @@ class lcContentObject extends lcPersistent
 	{
 		$lang = $GLOBALS['SETTINGS']['currentLanguage'];
 
-		$contentMenu = lcContentMenu::fetchByObjectId($this->id, $lang);
+		$contentMenu = lcContentMenu::fetchMenuByObjectId($this->id, $lang);
 		if (isset($contentMenu['path_string']))
 		{
 		    $path = $contentMenu['path_string'];

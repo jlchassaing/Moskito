@@ -103,7 +103,7 @@ function getRequestedModule(& $requestArray)
 	}
 	if ($Module instanceof lcModule)
 	{
-	    $requestArray = array_slice($requestArray, 1);
+	    $requestArray =  is_array($requestArray)?array_slice($requestArray, 1):null;
 		if (!isset($requestArray[0]))
 		{
 			$Module->setDefaultView();
@@ -128,7 +128,7 @@ function getRequestedModule(& $requestArray)
 
 $Module = false;
 
-if ($currentAccess != "setup")
+if ($currentAccess != "install")
 {
     if ($request['url_alias'] == "/")
     {

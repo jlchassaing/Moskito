@@ -173,7 +173,7 @@ class lcMenu extends lcPersistent
         {
             $newParent = self::fetchById($parent);
             $parentPathId = $newParent->attribute('path_ids');
-            $section_id  = $newParent->attriubte('section_id');
+            $section_id  = $newParent->attribute('section_id');
         }
 
         $oldPathId = $this->path_ids;

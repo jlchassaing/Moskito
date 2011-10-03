@@ -114,8 +114,6 @@ class lcHTTPTool
             }
         }
 
-
-
         $result['fullrequest'] = (substr($request, -1) != "/")?$request."/":$request;
         $result['fullrequest'] = str_replace("?", "", $result['fullrequest']);
         $result['url_alias'] = (substr($request, -1) == "/")?substr($request,0 -1):$request;
@@ -129,9 +127,15 @@ class lcHTTPTool
         {
             $result['request'] = null;
         }
+        $this->request = $result;
 
         return $result;
 
+    }
+
+    public function getRefferer()
+    {
+        $refferer = $_SERVER['HTTP_REFERER'];
     }
 
     public function makeUrl($path)

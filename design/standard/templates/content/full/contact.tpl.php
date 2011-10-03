@@ -1,4 +1,10 @@
-
+<?php if (isset($errors)):?>
+<div id="errors">
+<?php foreach ($errors as $error):?>
+		<p><?php echo $error;?></p>
+<?php endforeach;?>
+</div>
+<?php endif;?>
 <form action="<?php $this->url('/content/form');?>" method="post">
 
 
@@ -13,6 +19,9 @@
 }?>
 
 <?php endforeach;?>
+
+<?php $this->includeTpl('field/edit/captcha.tpl.php');?>
+
 <input type="hidden" name="ObjectIdValue" value="<?php echo $object->attribute('id');?>" />
 <input type="submit" name="SendFormButton" value="Envoyer" />
 </form>

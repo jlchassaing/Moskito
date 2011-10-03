@@ -28,8 +28,8 @@
 <?php else:?>
 </li>
 <?php endif;?>
-<li>
-
+<li class="show">
+<span class="open"></span>
 <?php echo $item['name'];?>
  <input type="text" value="<?php echo substr($item['sort_val'],-2);?>" name="MenuNewSortValue[]" size="2"  class="smallinput"/>
 <a href="<?php $this->url('content/menu/edit/'.$item['id']);?>" ><img src="<?php $this->designurl('images/icones/edit-18x18.png');?>" alt="modifier" /></a>
@@ -54,3 +54,41 @@
     <div class="bl"><div class="br"><div class="bc"></div></div></div>
 
 </div>
+
+<?php $this->require_script(array("jquery-1.4.3.min.js"))?>
+<script type="text/javascript">
+$(function(){
+	var openImg = "<img src=\"<?php $this->designurl('images/icones/add-18x18.png')?>\" />";
+	var closeImg = "<img src=\"<?php $this->designurl('images/icones/minus-18x18.png')?>\" />";
+	$('li ul').hide();
+	$('li:has(ul)').each(function(){
+
+			$(this).children('span').empty();
+			$(this).children('span').append(openImg);
+		});
+	$('span').click(function(){
+			if ($(this).hasClass('open'))
+			{
+				$(this).parent().children('ul').show();
+				$(this).removeClass('open');
+				$(this).addClass('close');
+				$(this).empty();
+				$(this).append(closeImg);
+			}
+			else
+			{
+				$(this).parent().children('ul').hide();
+				$(this).removeClass('close');
+				$(this).addClass('open');
+				$(this).empty();
+				$(this).append(openImg);
+			}
+
+		});
+
+
+
+
+});
+
+</script>

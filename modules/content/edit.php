@@ -47,10 +47,10 @@ if ($http->hasPostVariable("SaveButton"))
 		{
 			$parentId = $http->postVariable("MenuParentValue");
 			$menuName = "";
-			if ($http->hasPostVariable("MenuNameValue"))
+			/*if ($http->hasPostVariable("MenuNameValue"))
 			{
 				$menuName = $http->postVariable("MenuNameValue");
-			}
+			}*/
 			if ($menuName == "")
 			{
 				$menuName = $contentObject->attribute('object_name');
@@ -76,7 +76,7 @@ else
 	$contentObject = lcContentObject::fetchById($objectID,$lang);
 	if ($contentObject instanceof lcContentObject)
 	{
-		$contentMenu = lcContentMenu::fetchByObjectId($objectID, $lang);
+		$contentMenu = lcContentMenu::fetchMenuByObjectId($objectID, $lang);
 
 		$fullMenu = lcContentMenu::fetchMenuTree(1,null,null,true);
 		$tpl->setVariable("object", $contentObject);

@@ -5,7 +5,7 @@ $ObjectID = (isset($Params['ObjectId']))?$Params['ObjectId']:null;
 $ObjLang = (isset($Params['Lang']))?$Params['Lang']:null;
 
 
-$menuList = lcContentMenu::fetchByObjectId($ObjectID,null,true,true);
+$menuList = lcContentMenu::fetchMenuByObjectId($ObjectID,null,true,true);
 foreach ($menuList as $menu)
 {
     $object = lcContentObject::fetchByNodeId($menu['node_id'],$menu['lang'],true);
