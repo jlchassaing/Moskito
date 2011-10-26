@@ -31,6 +31,11 @@ if ($http->hasPostVariable("SendFormButton"))
             $validCaptcha = $captchaMgr->check();
         }
 
+        if (!$validCaptcha)
+        {
+            $errors['captcha'] = "Captcha error";
+        }
+
         $recipient = $contentObject->attribute('recipient');
 
         if (!lcStringTools::isEmail($recipient))
@@ -53,7 +58,16 @@ if ($http->hasPostVariable("SendFormButton"))
 
             $mail = new lcMail();
 
-            $mail->from = $sender;
+            $fromName = $tpl->variable('fromName');
+            if (is_string($fromName))
+            {
+                $mail->setFrom($sender,$fromName);
+            }
+            else
+            {
+                $mail->setFrom($sender,$sender);
+            }
+
             $mail->to = $recipient;
             $mail->subject = $contentObject->attribute('subject');
             $mail->text = $mailContent;

@@ -20,7 +20,9 @@
 
 <?php endforeach;?>
 
-<?php $this->includeTpl('field/edit/captcha.tpl.php');?>
+
+
+<?php // $this->includeTpl('field/edit/captcha.tpl.php');?>
 
 <input type="hidden" name="ObjectIdValue" value="<?php echo $object->attribute('id');?>" />
 <input type="submit" name="SendFormButton" value="Envoyer" />

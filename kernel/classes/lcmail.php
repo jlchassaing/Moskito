@@ -88,7 +88,7 @@ class lcMail
      */
     public function send()
     {
-       $mailoption = "-f".$this->from;
+       $mailoption = "-f".$this->from['mail'];
        if (!mail($this->to,$this->subject,$this->text,$this->headers(),$mailoption))
        {
            $this->error = "Mail could not be sent";
@@ -116,17 +116,24 @@ class lcMail
         $headers .= 'MIME-Version: 1.0' . "\n";
 
         $headers .= "Content-type: ".$this->type."; charset=". $this->charset ."\n";
-        $headers .= "Content-Transfer-Encoding: 8bit\n".
+        $headers .= "Content-Transfer-Encoding: quoted-printable\n".
                     "Content-Disposition: inline\n".
                     "User-Agent: ".$this->userAgent."\n";
 
         if (isset($this->from))
         {
-            $headers .= "From : ". $this->from ."\n" .
-                        "Reply-To : ". $this->from ."\n";
+            $headers .= "From: ".$this->from['name']." <". $this->from['mail'] .">\n" .
+                        "Reply-To: ".$this->from['name']." <". $this->from['mail'] .">\n";
         }
 
         return $headers;
+    }
+
+    public function setFrom($email,$name=null)
+    {
+        $this->from = array();
+        $this->from['name'] = ($name == null)?$email:$name;
+        $this->from['mail'] = $email;
     }
 
     public function __set($name,$value)

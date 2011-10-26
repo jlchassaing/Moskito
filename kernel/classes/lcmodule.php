@@ -198,6 +198,8 @@ class lcModule
             $tpl->setVariable("currentNodeId", $this->params['NodeId']);
         }
 
+
+
         $tpl->setVariable("MainResult", $Result['content']);
 
         return $tpl->fetch($Result['layout']);

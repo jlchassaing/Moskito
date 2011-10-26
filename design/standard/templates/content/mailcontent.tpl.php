@@ -9,3 +9,5 @@
 <p>Sujet : <?php echo $Object->attribute('subject');?></p>
 
 <p>Message : <?php echo $Object->attribute('message');?></p>
+
+<?php //$this->setVariable('fromName',$Object->attribute('prenom')." ".$Object->attribute('nom'));?>

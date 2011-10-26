@@ -80,6 +80,7 @@ div.borderbox .bl{background:transparent none no-repeat left top;}
 div.borderbox .br{background:transparent none no-repeat right top;padding:0px}
 div.borderbox .bc{background:transparent none repeat-x; height:0px;font-size:0px;border-bottom:1px solid black}
 div.borderbox .blocktitle{font-size:1em;font-weight:normal;color:white;line-height:34px}
+.blocktitle form{float:right}
 div.borderbox .content{padding:5px}
 div.borderbox .table-content{padding:0}
 

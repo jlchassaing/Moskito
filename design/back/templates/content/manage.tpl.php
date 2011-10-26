@@ -1,6 +1,6 @@
 <h2>Gestion du contenu</h2>
 
-
+<?php $limits = array(5,10,20,30,50)?>
 
 
 <div class="borderbox">
@@ -8,7 +8,15 @@
 <div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle">Liste des contenus <?php $this->includeTpl('content/paging.tpl.php',array('offset'=>$offset,
 													   'nbitems'=>$nbitems,
 													   'elements_count' => $nb_elements,
-                                                       'url' => $this->url("/content/manage",'no')));?></h2> </div></div></div>
+                                                       'url' => $this->url("/content/manage",'no')));?> <form action="<?php $this->url("content/manage");?>" method="post" >Eléments par page <select name="ElementsByPage"><?php foreach ($limits as $value):?>
+
+                                                       <option value="<?php echo $value ?>" <?php if ($nbitems == $value) echo "selected"?> ><?php echo $value?></option>
+                                                       <?php endforeach;?>
+                                                       </select>
+                                                       <input type="submit" value="OK" />
+                                                       </form>
+
+                                                       </h2> </div></div></div>
 <div class="ml"><div class="mr"><div class="mc">
 
 <div class="table-content">

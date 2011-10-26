@@ -14,7 +14,7 @@ class lcTemplate
 
     public function __construct()
     {
-
+        $this->params = array();
     }
 
     /*!
@@ -143,6 +143,23 @@ class lcTemplate
     }
 
     /*!
+     return a template variable. if the variable is not set then return null
+     \param string $name variable name to retrieve
+     \return mixed
+     */
+    public function variable($name)
+    {
+        if (isset($this->params[$name]))
+        {
+            return $this->params[$name];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /*!
      deals with the methods that are called in the templates
     \param string $methode, the name of the method to execute
     \param array $params the param array
@@ -230,6 +247,17 @@ class lcTemplate
             case "view":
 
                 break;
+            case "moduleView":
+                    $ModuleName = $params[0];
+                    $ModuleView = $params[1];
+                    $ModuleParams = array('View' =>$params[2]);
+                    $ModuleParams['Node'] = $params[3];
+
+                    $module = lcModule::loadModule($ModuleName);
+                    $module->loadView($ModuleView,$ModuleParams);
+                    $result = $module->buildView();
+                    echo $result['content'];
+                 break;
             default:
                 echo"call of : $methode ";
             break;

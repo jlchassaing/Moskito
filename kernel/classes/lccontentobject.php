@@ -242,7 +242,12 @@ class lcContentObject extends lcPersistent
 	public function nameExists($name)
 	{
 	    $db = lcDB::getInstance();
-	    $query = "SELECT count(*) as nb from contentobjects where object_name='$name'";
+	    $idCond = "";
+	    if (isset($this->id))
+	    {
+	        $idCond = "and id!=".$this->id;
+	    }
+	    $query = "SELECT count(*) as nb from contentobjects where object_name='$name' $idCond";
 	    $res = $db->arrayQuery($query);
 	    if ($res[0]['nb'] > 0)
 	    {

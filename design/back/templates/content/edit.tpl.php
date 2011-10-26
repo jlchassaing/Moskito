@@ -23,13 +23,13 @@
 Ajouter dans le menu <input type="checkbox" name="AddToAMenu" />
 <label>Position dans le menu : parent</label>
 <select name="MenuParentValue">
-<option value="0" <?php if ($menu['parent_node_id'] == 0) echo "SELECTED";?> >Root</option>
+<option value="0" <?php if (isset($menu['parent_node_id']) AND $menu['parent_node_id'] == 0) echo "SELECTED";?> >Root</option>
 <?php foreach ($fullMenu as $key=>$item):?>
 <?php $path=explode("/", $item['path_ids']);
 $decal=""; for ($i=2;$i<count($path);$i++) $decal = $decal."---";?>
 
 
-<option <?php if ($menu['parent_node_id'] == $item['node_id']) echo "SELECTED";?> value="<?php echo $item['node_id'];?>"><?php echo $decal.' '.$item['name'];?></option>
+<option <?php if (isset($menu['parent_node_id']) AND $menu['parent_node_id'] == $item['node_id']) echo "SELECTED";?> value="<?php echo $item['node_id'];?>"><?php echo $decal.' '.$item['name'];?></option>
 
 
 <?php endforeach;?>

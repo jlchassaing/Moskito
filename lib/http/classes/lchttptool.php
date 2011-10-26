@@ -279,7 +279,7 @@ class lcHTTPTool
     {
         // header( $_SERVER['SERVER_PROTOCOL'] .  " 307" );
         // header( "Status", "307" );
-        if (substr($uri,-1) == "/")
+       if ($uri != "/" and substr($uri,-1) == "/")
         {
             $uri = substr($uri, 0, -1);
         }

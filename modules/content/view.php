@@ -5,6 +5,12 @@ $tpl = new lcTemplate();
 $viewMode = (isset($Params['View']))?$Params['View']:false;
 $nodeID = (isset($Params['NodeId']))?$Params['NodeId']:false;
 $lang = (isset($Params['Lang']))?$Params['Lang']:false;
+$Node = null;
+if (isset($Params['Node']))
+{
+    $Node = $Params['Node'];
+    $nodeID = $Node->attribute('node_id');
+}
 
 $settings = lcSettings::getInstance();
 
@@ -21,9 +27,9 @@ if ($viewMode AND $nodeID)
 	{
 		$classIdentifier = $contentObject->attribute('class_identifier');
 		$templateRule = lcTemplateRule::getInstance();
-		$rulesSet = array('Class'    => $classIdentifier,
-					  	  'NodeId'   => $nodeID,
-		                  'Action'   => 'content/view.tpl.php');
+		$rulesSet = array('Match' => array('Class'    => $classIdentifier,
+					  	  				   'NodeId'   => $nodeID),
+		                  'Action'   => 'content/view/'.$viewMode.'.tpl.php');
 		$tplPath = $templateRule->getTemplate($rulesSet);
 
 		if ($tplPath == "")
