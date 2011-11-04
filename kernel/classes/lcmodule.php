@@ -27,7 +27,7 @@ class lcModule
 
 
 
-    const DEFAULT_LAYOUT = "layout.tpl.php";
+    const DEFAULT_LAYOUT = "DEFAULT_LAYOUT";
 
     /*!
 
@@ -191,7 +191,7 @@ class lcModule
     {
 
         $Result = $this->buildView();
-        $tpl = new lcTemplate();
+        /*$tpl = new lcTemplate();
 
         if (isset($this->params['NodeId']))
         {
@@ -202,7 +202,9 @@ class lcModule
 
         $tpl->setVariable("MainResult", $Result['content']);
 
-        return $tpl->fetch($Result['layout']);
+        return $tpl->fetch($Result['layout']);*/
+
+        return $Result;
     }
 
     /*!

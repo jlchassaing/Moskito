@@ -105,6 +105,19 @@ class lcRule extends lcPersistent
 
     }
 
+    /*!
+     * fetch the rule by it's ID
+     * \param integer $ruleId
+     * \param boolean $asObject
+     *
+     * \return lcRule
+     */
+    public static function fetchById($ruleId,$asObject=true)
+    {
+        $cond = array('id' => $ruleId);
+        return self::fetch(self::definition(),$cond,null,null,null,$asObject,false);
+    }
+
 
     protected $role;
     protected $id;

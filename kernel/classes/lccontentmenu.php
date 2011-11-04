@@ -237,7 +237,7 @@ class lcContentMenu extends lcPersistent
     \param string $lang site language
     \return lcContentMenu
     */
-    public static function fetchByNodeId($node_id,$lang=null,$asObject = false,$asList = false)
+    public static function fetchByNodeId($node_id,$lang=null,$asObject = true,$asList = false)
     {
         $cond = array('node_id'=>$node_id);
         if (!is_null($lang))
@@ -256,7 +256,7 @@ class lcContentMenu extends lcPersistent
     \param boolean $asObject
     \return lcContentMenu
     */
-    public static function fetchByPath($path,$lang,$asObject = false)
+    public static function fetchByPath($path,$lang,$asObject = true)
     {
         $cond = array('path_string'=>$path,
 					  'lang' => $lang);
@@ -374,6 +374,17 @@ class lcContentMenu extends lcPersistent
         $newPath = $parentPathString."/".$cleanName;
         $newContentMenu->setAttribute('path_string', $newPath);
         $newContentMenu->store();
+    }
+
+    /*
+     * return the current menu section id
+     * \return integer
+     */
+    public function section()
+    {
+        $menu = lcMenu::fetchById($this->attribute('node_id'),false);
+        return $menu['section_id'];
+
     }
 
     /*!

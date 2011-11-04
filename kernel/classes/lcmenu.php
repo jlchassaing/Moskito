@@ -107,10 +107,10 @@ class lcMenu extends lcPersistent
      fetch a lcmenu content by node id as $menuId
      \return lcMenu
      */
-    public static function fetchById($menuId)
+    public static function fetchById($menuId, $asObject = true)
     {
         $cond = array('node_id'=>$menuId);
-        return self::fetch(self::definition(),$cond,null,null,null,true);
+        return self::fetch(self::definition(),$cond,null,null,null,$asObject);
     }
 
 
