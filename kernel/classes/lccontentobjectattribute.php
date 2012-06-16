@@ -168,6 +168,16 @@ class lcContentObjectAttribute extends lcPersistent
         }
     }
 
+    public function storeAttribute(& $contentObject)
+    {
+        if ($this->contentobject_id == null )
+        {
+            $this->setAttribute('contentobject_id', $contentObject->attribute('id'));
+        }
+        $this->content->publish($contentObject, $this);
+        $this->store();
+    }
+
 
 
 

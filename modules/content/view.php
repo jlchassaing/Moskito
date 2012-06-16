@@ -5,6 +5,9 @@ $tpl = new lcTemplate();
 $viewMode = (isset($Params['View']))?$Params['View']:false;
 $nodeID = (isset($Params['NodeId']))?$Params['NodeId']:false;
 $lang = (isset($Params['Lang']))?$Params['Lang']:false;
+
+$Module = $Params['Module'];
+
 $Node = null;
 if (isset($Params['Node']))
 {
@@ -30,16 +33,29 @@ if ($viewMode AND $nodeID)
 		$rulesSet = array('Match' => array('Class'    => $classIdentifier,
 					  	  				   'NodeId'   => $nodeID),
 		                  'Action'   => 'content/view/'.$viewMode.'.tpl.php');
-		$tplPath = $templateRule->getTemplate($rulesSet);
 
-		if ($tplPath == "")
-		    $tplPath = "content/view.tpl.php";
-		$tpl->setVariable("node_id",$nodeID);
-		$tpl->setVariable("object", $contentObject);
-		if (isset($tplPath))
+
+		$cache = lcCache::getInstance();
+		if (($content = $cache->hasValidCacheFile($Params)) !== false)
 		{
-			$Result['content'] = $tpl->fetch($tplPath);
+		    $result['content'] =  $content;
 		}
+		else
+		{
+    		$tplPath = $templateRule->getTemplate($rulesSet);
+
+            if ($tplPath == "")
+                $tplPath = "content/view.tpl.php";
+            $tpl->setVariable("node_id",$nodeID);
+            $tpl->setVariable("object", $contentObject);
+            if (isset($tplPath))
+            {
+                $Result['content'] = $tpl->fetch($tplPath);
+            }
+            $cache->makeCacheFile($Params, $Result['content']);
+		}
+
+
 	}
 	else
 	{

@@ -67,6 +67,11 @@ class lcStringDataType implements lcDatatypeInterface
 		return (isset($this->value))?true:false;
 	}
 
+	public function publish(& $contentObject, & $contentAttribute)
+	{
+
+	}
+
 
 
 

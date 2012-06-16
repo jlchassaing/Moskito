@@ -18,7 +18,18 @@
 <td class="first"><input type="checkbox" name="ruleId[]" value="<?php echo $rule->attribute('id');?>" /></td>
 <td><?php echo $rule->attribute('module');?></td>
 <td><?php echo $rule->attribute('function');?></td>
-<td><?php echo $rule->attribute('params');?></td>
+<td><?php $params=$rule->attribute('params') ;
+if (is_array($params))
+{
+    foreach($params as $key=>$value){
+
+        echo "$key =>";
+        if (is_array($value))
+            echo implode("; ",$value);
+        else
+            echo " $value";
+    }
+}?></td>
 <td class="last"><a href="<?php $this->url("role/ruledit/".$rule->attribute('id'));?>" ><img src="<?php $this->designurl('images/icones/edit-18x18.png');?>" alt="Edit the content" /></a></td>
 </tr>
 <?php endforeach;?>

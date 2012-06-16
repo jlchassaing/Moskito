@@ -212,6 +212,16 @@ class lcContentObject extends lcPersistent
 		return false;
 	}
 
+	public function hasAttribute($name)
+	{
+		$result = false;
+		if (isset($this->$name) or (isset($this->data_map[$name]) AND $this->data_map[$name]->hasContent()))
+		{
+			$result = true;
+		}
+		return $result;
+	}
+
 	/*!
 	 build the object name in regard of the corresponding contentclass definition
 	 */
@@ -323,20 +333,21 @@ class lcContentObject extends lcPersistent
 		$this->buildName();
 
 		$newInsert = false;
-		$lastId = parent::store();
-		if (!isset($this->id) AND is_integer($lastId))
+		$ObjectId = parent::store();
+		if (!isset($this->id) AND is_integer($ObjectId))
 		{
-			$this->setAttribute("id",$lastId);
+			$this->setAttribute("id",$ObjectId);
 			$newInsert = true;
 		}
 
 		foreach ($this->data_map as $attribute)
 		{
-			if ($newInsert)
+			/*if ($newInsert)
 			{
-				$attribute->setAttribute('contentobject_id',$lastId);
-			}
-			$attribute->store();
+				$attribute->setAttribute('contentobject_id',$ObjectId);
+			}*/
+
+			$attribute->storeAttribute($this);
 		}
 		$db->commit();
 

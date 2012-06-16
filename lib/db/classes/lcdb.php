@@ -247,12 +247,17 @@ class lcDB
                 {
                     $isFirstField = false;
                 }
+                if (is_array($value) and count($value) == 1)
+                {
+                    $value = $value[0];
+                }
+
                 if (is_array($value))
                 {
                     $list = "";
-                    foreach ($value as $key=>$item)
+                    foreach ($value as $id=>$item)
                     {
-                        $list .= ($key > 0)?", ":"";
+                        $list .= ($id > 0)?", ":"";
                         $list .= (is_numeric($item))?$item:"'$item'";
 
                     }

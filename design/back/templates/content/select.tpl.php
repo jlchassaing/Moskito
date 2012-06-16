@@ -3,11 +3,13 @@
 <div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle"><?php if ($parent_title['parent_node_id'] !== false):?><a href="<?php $this->url("content/select/".$parent_title['parent_node_id'])?>" title="previus" class="upper"><img src="<?php $this->designurl("images/icones/top-18x18.png")?>" alt="previus"/></a><?php endif;?> <?php echo $parent_title['name'];?> : Selectionnez un contenu</h2></div></div></div>
 <div class="ml"><div class="mr"><div class="mc">
 
+<?php if (is_array($fullMenu) and count($fullMenu) > 0):?>
+
 <div class="table-content">
 
 <form action="<?php $this->url("content/select");?>" method="post">
 
-<?php if (is_array($fullMenu) and count($fullMenu) > 0):?>
+
 
 <table>
 
@@ -40,11 +42,6 @@
 </tr>
 
 </table>
-<?php else: ?>
-
-<p>Aucun menu défini</p>
-
-<?php endif;?>
 
 
 
@@ -53,6 +50,13 @@
 
 
 </div>
+
+<?php else: ?>
+<div class="content">
+<p>Aucun menu défini</p>
+</div>
+<?php endif;?>
+
 
 </div></div></div>
     <div class="bl"><div class="br"><div class="bc"></div></div></div>

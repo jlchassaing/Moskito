@@ -69,15 +69,13 @@ class lcStyleLoader
     public static function load($styles = false)
     {
         $styleLoader = self::getInstance();
-        echo " <style type=\"text/css\">\n";
+        
         if (is_array($styleLoader->cssfiles))
         {
              
             foreach ($styleLoader->cssfiles as $script)
-            {
-                 
-                echo "@import url($script); \n";
-
+            {      
+                echo "<link rel=\"stylesheet\" href=\"$script\" type=\"text/css\" media=\"screen\">\n";
             }
 
         }
@@ -90,14 +88,11 @@ class lcStyleLoader
             foreach ($styles as $script)
             {
                 $path = lcDesign::designUrl("stylesheets/".$script);
-                echo "@import url($path) \n";
+                echo "<link rel=\"stylesheet\" href=\"$path\" type=\"text/css\" media=\"screen\">\n";
+                
 
             }
         }
-
-
-        echo "</style>\n";
-
 
     }
 

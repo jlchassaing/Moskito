@@ -134,6 +134,10 @@ class lcRole extends lcPersistent
 
                                 }
                             }
+                            else
+                            {
+                                $hasAccess = true;
+                            }
 
                         }
                         else

@@ -1,9 +1,9 @@
 <?php
 
-/**
+/*!
  *
  * This class deals with fil manipulation storing and reading
- * @author jlchassaing
+ * \author jlchassaing
  *
  */
 class lcFile
@@ -11,9 +11,9 @@ class lcFile
 	private $fileInfos;
 	private $xmlFileInfo;
 
-	private static $FIELDS = array('name','type','filename','basename','extension','size','created');
+	private static $FIELDS = array('name','type','filename','tmp_name','extension','size','created');
 
-	/**
+	/*!
 	 *
 	 * The lcFile object can be instanciated with and xml file description
 	 * which is set like this
@@ -23,7 +23,7 @@ class lcFile
 	 *  <type>[mimeType]</type>
 	 *  <created>[Creation date]</created>
 	 * </file>
-	 * @param string $fileDescription
+	 * \param string $fileDescription
 	 */
 	public function __construct($fileDescription)
 	{
@@ -38,7 +38,7 @@ class lcFile
 
 	}
 
-	/**
+	/*!
 	 *
 	 * Chek if a file has been set for this content
 	 */
@@ -54,7 +54,15 @@ class lcFile
 		}
 	}
 
-	/**
+	public function setFileName($fileName)
+	{
+	    $infos = pathinfo($fileName);
+	    $this->fileInfos['filename'] = $infos['filename'];
+	    $this->fileInfos['extension'] = $infos['extension'];
+	    $this->fileInfos['name'] = $fileName;
+	}
+
+	/*!
 	 *
 	 * Return the full image path
 	 * The path is built
@@ -80,10 +88,36 @@ class lcFile
 		}
 	}
 
+	public function setAttribute($name,$value)
+	{
+	    $this->fileInfos[$name] = $value;
+	}
+	/*!
+	 * get the filename, from an initial file name, test
+	 * if a file exists with the same name, and adds an index if so.
+	 * \param string $fileName initial file name
+	 * \return string
+	 */
+	public function searchSameName($fileName)
+	{
+
+	    $filePath = $this->path();
+	    $ext = $this->fileInfos['extension'];
+	    $cleanFileName = "$fileName.$ext";
+	    $index = 1;
+	    while (file_exists($filePath."/".$cleanFileName))
+        {
+            $cleanFileName = $fileName."_$index";
+            $cleanFileName = "$cleanFileName.$ext";
+            $index++;
+        }
+        return $cleanFileName;
+	}
+
 
 	public function fileName()
 	{
-		return $this->fileInfos['filename'];
+		return $this->fileInfos['name'];
 	}
 
 	public function fullPath()
@@ -97,24 +131,33 @@ class lcFile
 	}
 
 
+	public function unsetValue($name)
+	{
+	    unset($this->fileInfos[$name]);
+	}
 
-	/**
+
+	/*!
 	 *
-	 * return the xmlString of file Infos
+	 * \return the xmlString of file Infos
 	 */
 	public function getXmlFileInfo()
 	{
 		return $this->xmlFileInfo;
 	}
 
-	/**
+	/*!
 	 *
 	 * Set the file information the given attribute must be
 	 * an Array
-	 * @param array $aFileInfo
+	 * \param array $aFileInfo
 	 */
-	public function setFileInfos($aFileInfo)
+	public function setFileInfos($aFileInfo = null)
 	{
+	    if ($aFileInfo == null)
+	    {
+	        $aFileInfo = $this->fileInfos;
+	    }
 		if (is_array($aFileInfo))
 		{
 			$xmlData = "<?xml version='1.0'?>";
@@ -136,6 +179,21 @@ class lcFile
 			return false;
 		}
 
+	}
+
+	/*!
+	 * return the fileInfo Array
+	 * \return array
+	 */
+	public function fileInfo()
+	{
+	    return $this->fileInfos;
+	}
+
+	public function remove()
+	{
+	    $filePath = $this->fullPath();
+	    unlink($filePath);
 	}
 
 

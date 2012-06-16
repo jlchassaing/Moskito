@@ -7,6 +7,7 @@
  */
 class lcSection extends lcPersistent
 {
+	const DEFAULT_SECTION_ID = 1;
 
     /*!
       constructor

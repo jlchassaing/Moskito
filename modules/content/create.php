@@ -66,7 +66,7 @@ else
 
 
 	$contentClass = lcContentClass::loadClassDefinition($classID);
-	$fullMenu = lcContentMenu::fetchMenuTree(1,null,null,true);
+	$fullMenu = lcContentMenu::fetchMenuTree(0,null,null,true);
 
 	$tpl->setVariable("class", $contentClass);
 

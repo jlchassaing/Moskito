@@ -41,9 +41,10 @@
 <div class="functionparam">
 <label><?php echo $key;?></label>
 <input type="hidden" name="paramFieldList[]" value="<?php echo "param_".$key; ?>" />
-<select name="<?php echo "param_".$key; ?>">
+<select name="<?php echo "param_".$key."[]"; ?>" multiple="multiple">
 <?php foreach($value['list'] as $item): ?>
-<option value="<?php echo $item[$value['keys'][0]]; ?>" ><?php echo $item[$value['keys'][1]]; ?></option>
+<?php $selected = (isset($selectedParams[$key]) and in_array($item[$value['keys'][0]],$selectedParams[$key]))?"selected=\"selected\"":""; ?>
+<option value="<?php echo $item[$value['keys'][0]]; ?>" <?php echo $selected?> ><?php echo $item[$value['keys'][1]]; ?></option>
 <?php endforeach;?>
 </select>
 <?php endforeach;?>
@@ -53,6 +54,9 @@
 
 
 <div class="buttons">
+<?php if (isset($ruleId)):?>
+	<input type="hidden" name="RuleIdValue" value="<?php echo $ruleId?>" />
+<?php endif;?>
 <input type="hidden" name="ProcessPhase" value="<?php echo $roleAddPhase;?>" />
 <input type="hidden" name="RoleIdValue" value="<?php echo $roleId?>" />
 <input type="submit" name="SaveRuleButton" value="Enregistrer" />

@@ -51,7 +51,7 @@ class lcContentMenu extends lcPersistent
 										  'lang'				=> array('type' => 'string')
         ),
 					 'key' => 'id'
-        );
+					 );
     }
 
 
@@ -63,6 +63,8 @@ class lcContentMenu extends lcPersistent
     */
     public static function fetchMenuTree($node_id=null,$lang = null,$depth=null,$getParent = false)
     {
+        $db = lcDB::getInstance();
+
         if (is_null($lang))
         {
             $settings = lcSettings::getInstance();
@@ -78,7 +80,93 @@ class lcContentMenu extends lcPersistent
 
         $node_id = ($node_id === null)?$settings->value('TreeNodes','ContentNode'):$node_id;
 
+        $nodeCond = self::getNodeDepthCond($node_id,$depth,$getParent);
+
+
+        $selectFields = "contentmenu.id, menu.node_id, (select count(*) from menu as menu2 where menu2.parent_node_id = menu.node_id) as children_count,
+                               contentmenu.contentobject_id, contentmenu.name, contentmenu.path_string, contentmenu.lang, ".
+       				        " menu.parent_node_id, menu.path_ids, menu.sort_val, contentobjects.created, contentobjects.class_identifier";
+
+        $query = "SELECT $selectFields FROM contentmenu,contentobjects, menu ".
+				 "WHERE contentmenu.node_id = menu.node_id ".
+			     "AND contentmenu.lang = '$lang' ".
+				 "AND contentobjects.id = contentmenu.contentobject_id ".
+        $nodeCond .
+			     "ORDER BY menu.sort_val ";
+        return $db->arrayQuery($query);
+    }
+
+    public static function fetchContentTree($nodeId,$classfilterArray = null, $depth = null,$asObject = false)
+    {
         $db = lcDB::getInstance();
+
+        $classfilterString = "";
+        if (is_array($classfilterArray))
+        {
+            $classfilterString = " AND contentobjects.class_identifier IN ('";
+            $classfilterString .= implode("', '",$classfilterArray)."')";
+
+        }
+
+        $nodeCond = self::getNodeDepthCond($nodeId,$depth);
+
+
+        $query = "SELECT contentmenu.*, menu.parent_node_id FROM contentobjects, contentmenu, menu WHERE
+    			  contentobjects.id = contentmenu.contentobject_id
+    			  AND contentmenu.node_id = menu.node_id $classfilterString  $nodeCond
+    			  ORDER BY menu.sort_val ASC";
+
+
+        $result = $db->arrayQuery($query);
+        if ($asObject)
+        {
+            foreach ($result as $key=>$item)
+            {
+                // $result[$key] = new lcContentObject($item);
+                 $result[$key]['parent_node_id'] = $item['parent_node_id'];
+                 $result[$key]['node_id'] = $item['node_id'];
+                 $result[$key]['object'] = lcContentObject::fetchByNodeId($item['node_id']);
+            }
+        }
+        return $result;
+    }
+
+    public static function getNodeDepthCond($nodeId,$depth,$getParent = false)
+    {
+        $db = lcDB::getInstance();
+
+        $query = "SELECT path_ids FROM menu WHERE node_id = $nodeId";
+
+        $parentNodeId = $db->arrayQuery($query);
+        $parentPathId = "/";
+        $depthValues = "";
+
+        if ($depth == 1 )
+        {
+            $depthValues = ($getParent)?"0,1":"1";
+
+        }
+        elseif ($depth > 1)
+        {
+            if ($getParent)
+            {
+                $depthValues = "0,$depth";
+            }
+            else
+            {
+                $depthValues = "1,$depth";
+            }
+        }
+
+
+
+        if (isset($parentNodeId[0]['path_ids']))
+        {
+            $parentPathId = $parentNodeId[0]['path_ids'];
+        }
+
+        $pathIdRegexp ="'^$parentPathId([0-9]+/){".$depthValues."}$'";
+
         $nodeCond = "";
         $firstItem = 1;
         $depthCond = "+";
@@ -88,42 +176,18 @@ class lcContentMenu extends lcPersistent
             $depthCond = "*";
         }
 
-        if (isset($node_id))
+
+        if ($depth !== null)
         {
-            if ($node_id > 0)
-            {
-                if (!is_null($depth))
-                {
-                    if ( $depth > 0)
-                    {
-                        $depthCond = "{".$firstItem.",".$depth."}$";
-                    }
-                    if ($depth == 0)
-                    {
-                        $depthCond = 0;
-                    }
-
-                }
-                $nodeCond = "AND menu.path_ids REGEXP concat((select menu.path_ids from menu where node_id=$node_id),'([0-9]+/)$depthCond') ";
-            }
-            else
-            {
-                $nodeCond = "AND menu.parent_node_id = $node_id ";
-            }
-
+            $nodeCond = "AND menu.path_ids REGEXP $pathIdRegexp ";
+        }
+        else
+        {
+            $nodeCond = "";
         }
 
-         $selectFields = "contentmenu.id, menu.node_id, (select count(*) from menu as menu2 where menu2.parent_node_id = menu.node_id) as children_count,
-                               contentmenu.contentobject_id, contentmenu.name, contentmenu.path_string, contentmenu.lang, ".
-       				        " menu.parent_node_id, menu.path_ids, menu.sort_val, contentobjects.created";
+        return $nodeCond;
 
-        $query = "SELECT $selectFields FROM contentmenu,contentobjects, menu ".
-				 "WHERE contentmenu.node_id = menu.node_id ".
-			     "AND contentmenu.lang = '$lang' ".
-				 "AND contentobjects.id = contentmenu.contentobject_id ".
-        $nodeCond .
-			     "ORDER BY menu.sort_val ";
-        return $db->arrayQuery($query);
     }
 
     /*!
@@ -220,10 +284,10 @@ class lcContentMenu extends lcPersistent
 
     /*!
      *
-    Enter description here ...
-    \param interger $Id
-    \return lcContentMenu
-    */
+     Enter description here ...
+     \param interger $Id
+     \return lcContentMenu
+     */
     public static function fetchById($Id)
     {
         $cond = array('id'=>$Id);
@@ -232,11 +296,11 @@ class lcContentMenu extends lcPersistent
 
     /*!
      *
-    Enter description here ...
-    \param interger $node_id mneu Node Id
-    \param string $lang site language
-    \return lcContentMenu
-    */
+     Enter description here ...
+     \param interger $node_id mneu Node Id
+     \param string $lang site language
+     \return lcContentMenu
+     */
     public static function fetchByNodeId($node_id,$lang=null,$asObject = true,$asList = false)
     {
         $cond = array('node_id'=>$node_id);
@@ -250,12 +314,12 @@ class lcContentMenu extends lcPersistent
 
     /*!
      *
-    Fetch contentmenu by path string
-    \param string $path path to search
-    \param string $lang
-    \param boolean $asObject
-    \return lcContentMenu
-    */
+     Fetch contentmenu by path string
+     \param string $path path to search
+     \param string $lang
+     \param boolean $asObject
+     \return lcContentMenu
+     */
     public static function fetchByPath($path,$lang,$asObject = true)
     {
         $cond = array('path_string'=>$path,
@@ -332,10 +396,10 @@ class lcContentMenu extends lcPersistent
         {
             return $object;
         }
-         else
-         {
-             return false;
-         }
+        else
+        {
+            return false;
+        }
     }
 
     public static function fetchAll($asObject = true)
@@ -361,7 +425,7 @@ class lcContentMenu extends lcPersistent
         $parentPathString = "";
         if ($parent > 0)
         {
-            $parentContentMenu = lcContentMenu::fetchByNodeId($parent, $lang);
+            $parentContentMenu = lcContentMenu::fetchByNodeId($parent, $lang,false);
             if (isset($parentContentMenu['path_string']))
             {
                 $parentPathString = $parentContentMenu['path_string'];
@@ -491,8 +555,8 @@ class lcContentMenu extends lcPersistent
 
     /*!
      fecth the cotentmenu children of the current node
-    \param boolean $allversions
-    */
+     \param boolean $allversions
+     */
     public function children($allversions = false)
     {
         $db = lcDB::getInstance();
@@ -520,9 +584,9 @@ class lcContentMenu extends lcPersistent
     public static function hasSection($section_id,$nodeId)
     {
         $count = self::fetchCount(lcMenu::definition(),
-                                  array('section_id' => $section_id,
+        array('section_id' => $section_id,
                           			    'node_id' => $nodeId)
-                    );
+        );
         return ($count > 0)?true:false;
     }
 

@@ -22,14 +22,15 @@ if ($http->hasPostVariable("SelectedButton"))
 else
 {
     $fullMenu = lcContentMenu::fetchMenuTree($NodeId,null,1,true);
-    if ($fullMenu[0]['node_id'] == $fullMenu[1]['parent_node_id'])
+
+    if (count($fullMenu) > 0 AND $fullMenu[0]['node_id'] == $fullMenu[1]['parent_node_id'])
     {
         $title = $fullMenu[0];
         $fullMenu = array_slice($fullMenu, 1);
     }
     else
     {
-        $title['object_name'] = "Racine";
+        $title['name'] = "Racine";
         $title['parent_node_id'] = false;
     }
     $tpl->setVariable("parent_title", $title);

@@ -33,15 +33,15 @@ class lcMenu extends lcPersistent
     static function definition()
     {
         return array('tableName' => 'menu',
-					 'className' => 'lcMenu',
-					 'fields' 	 => array('node_id'  	 	=> array('type' => 'integer'),
-									   	  'parent_node_id'	=> array('type' => 'integer'),
-		                                  'sort_val'		=> array('type' => 'string'),
-									   	  'path_ids'		=> array('type' => 'string'),
-									   	  'section_id'		=> array('type' => 'integer')
+                     'className' => 'lcMenu',
+                     'fields'    => array('node_id'         => array('type' => 'integer'),
+                                          'parent_node_id'  => array('type' => 'integer'),
+                                          'sort_val'        => array('type' => 'string'),
+                                          'path_ids'        => array('type' => 'string'),
+                                          'section_id'      => array('type' => 'integer')
         ),
-					 'key' => 'node_id'
-					 );
+                     'key' => 'node_id'
+                     );
     }
 
 
@@ -66,8 +66,8 @@ class lcMenu extends lcPersistent
     {
         $db = lcDB::getInstance();
         $query = "SELECT * FROM ".$this->definition['tableName'].
-				 " WHERE node_id = $node_id or parent_node_id=$node_id ".
-				 "order_by parent_node";
+                 " WHERE node_id = $node_id or parent_node_id=$node_id ".
+                 "order_by parent_node";
     }
 
     /*!
@@ -80,17 +80,25 @@ class lcMenu extends lcPersistent
     {
         $db = lcDB::getInstance();
         $query = "SELECT menu.sort_val FROM menu ".
-	             "WHERE parent_node_id = $parentNodeId ".
-	             "ORDER BY sort_val DESC ".
-	             "LIMIT 0,1";
+                 "WHERE parent_node_id = $parentNodeId ".
+                 "ORDER BY sort_val DESC ".
+                 "LIMIT 0,1";
         $result = $db->arrayQuery($query);
-        if (isset($result[0]['sort_val']) AND $result[0]['sort_val'] != "" )
+        if (isset($result[0]['sort_val']) )
         {
-            return (int) substr($result[0]['sort_val'], -2);
+            if ($result[0]['sort_val'] != 0)
+            {
+                return (int) substr($result[0]['sort_val'], -2);
+            }
+            else
+            {
+                return $result[0]['sort_val'];
+            }
+
         }
         else
         {
-            return 0;
+            return null;
         }
     }
 
@@ -132,6 +140,22 @@ class lcMenu extends lcPersistent
             }
 
         }
+        else
+        {
+            $settings = lcSettings::getInstance();
+            if ($settings->hasValue("ContentSettings", "DefaultSection"))
+            {
+                $sectionId = $settings->value("ContentSettings", "DefaultSection");
+            }
+            else
+            {
+                $sectionId = lcSection::DEFAULT_SECTION_ID;
+            }
+            $newNodeData['parent_node_id'] = 0;
+            $newNodeData['section_id'] = $sectionId;
+            $newNodeData['sort_val'] = self::getSortVal();
+
+        }
 
         $node = new self($newNodeData);
         $nodeId = $node->store();
@@ -148,11 +172,28 @@ class lcMenu extends lcPersistent
      a parent.
      \param lcMenu $parent
      */
-    public static function getSortVal($parent)
+    public static function getSortVal($parent=null)
     {
-        $lastSortValue = $parent->lastSortVal();
-        $parentSortVal = $parent->attribute("sort_val");
-        $newSortValue = $lastSortValue + 5;
+
+        if ($parent !== null)
+        {
+            $lastSortValue = $parent->lastSortVal();
+            $parentSortVal = $parent->attribute("sort_val");
+        }
+        else
+        {
+            $lastSortValue = self::fecthLastSortVal(0);
+            $parentSortVal = "";
+        }
+        if ($lastSortValue === null)
+        {
+            $newSortValue = 0;
+        }
+        else
+        {
+            $newSortValue = $lastSortValue + 5;
+        }
+
         if ($newSortValue < 10)
         {
             $newSortValue = "0$newSortValue";
@@ -161,7 +202,8 @@ class lcMenu extends lcPersistent
         {
             $parentSortVal = "00";
         }
-        return $parentSortVal."/".$newSortValue;
+
+        return ($parentSortVal != "")?$parentSortVal."/".$newSortValue:$newSortValue;
     }
 
 
@@ -184,7 +226,11 @@ class lcMenu extends lcPersistent
 
         // update sort val
 
-
+        $oldSortVal = $this->sort_val;
+        if ($oldSortVal == 0)
+        {
+            $oldSortVal = "00";
+        }
         $this->sort_val = self::getSortVal($newParent);
 
         $this->store();
@@ -194,18 +240,19 @@ class lcMenu extends lcPersistent
         $childrenNodes = self::fetch(self::definition(),$cond,null,null,null,false,true);
         $db = lcDB::getInstance();
         $db->begin();
+        $pathLenght = strlen($oldPathId);
+        $sortLength = strlen($oldSortVal);
         foreach ($childrenNodes as $children)
         {
-            $pathLenght = strlen($oldPathId);
+            //$pathLenght = strlen($oldPathId);
             $pathLastIds = substr($children['path_ids'], $pathLenght);
             $newChildrenPath = $newPathId.$pathLastIds;
+            $lastSortValue = substr($children['sort_val'], $sortLength);
+            $newChildrenSortVal=$this->sort_val.$lastSortValue;
 
-
-            $childrenSortVal = substr($children['sort_val'],-2);
-            $newChildrenSortVal = $newSortValue."/".$childrenSortVal;
             $query = "UPDATE ".$this->definition['tableName'] ." SET ".
-					 "path_ids = '$newChildrenPath', sort_val='$newChildrenSortVal',section_id=$section_id WHERE ".
-					 "node_id = ".$children['node_id'];
+                     "path_ids = '$newChildrenPath', sort_val='$newChildrenSortVal',section_id=$section_id WHERE ".
+                     "node_id = ".$children['node_id'];
             $db->query($query);
         }
         $db->commit();
@@ -216,8 +263,8 @@ class lcMenu extends lcPersistent
         $db = lcDB::getInstance();
 
         $query = "UPDATE menu SET ".
-				 "section_id = $sectionId  WHERE ".
-				 "path_ids like '%/$parentNodeId/%'";
+                 "section_id = $sectionId  WHERE ".
+                 "path_ids like '%/$parentNodeId/%'";
 
         $db->query($query);
     }

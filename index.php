@@ -140,10 +140,10 @@ if ($currentAccess != "install")
         $contentMenu = lcContentMenu::fetchByPath($request['url_alias'], $currentLanguage);
     }
 
-    if (is_array($contentMenu) and isset($contentMenu['node_id']))
+    if (($contentMenu instanceOf lcContentMenu))
     {
         $Module = lcModule::loadModule("content");
-        $Module->loadView("view",array('View'=>'full','NodeId'=>$contentMenu['node_id']));
+        $Module->loadView("view",array('View'=>'full','NodeId'=>$contentMenu->attribute('node_id')));
     }
 
 }
@@ -187,16 +187,14 @@ lcSession::start();
 
 if ($userLogin)
 {
+    // gestion de la session
 
-
-		// gestion de la session
-
-		if (!lcSession::hasValue('user_id') AND !$Module->isCurrent("user", "login"))
-		{
-			lcSession::setValue('last_request',$request['fullrequest']);
-			$redirectUri = lcHTTPTool::buildUrl("/user/login");
-			lcHTTPTool::redirect($redirectUri);
-		}
+	if (!lcSession::hasValue('user_id') AND !$Module->isCurrent("user", "login"))
+	{
+		lcSession::setValue('last_request',$request['fullrequest']);
+		$redirectUri = lcHTTPTool::buildUrl("/user/login");
+		lcHTTPTool::redirect($redirectUri);
+	}
 
 	// chargement du module d'authentification si pas logué.
 }
@@ -215,7 +213,35 @@ if ($Module->isError())
 	$Module->loadView('display',$Params);
 }
 
-$pageResult = $Module->result();
+$ModuleResult = $Module->result();
+
+$tpl = new lcTemplate();
+
+$tpl->setVariable('MainResult', $ModuleResult['content']);
+
+if (!is_array($contentMenu) and $contentMenu instanceOf lcContentMenu)
+$tpl->setVariable("currentNodeId", $contentMenu->attribute('node_id'));
+$DefaultLayoutTemplate = "layout.tpl.php";
+$layoutTemplate = $ModuleResult['layout'];
+if ($layoutTemplate == lcModule::DEFAULT_LAYOUT)
+{
+    $tplRule = lcTemplateRule::getInstance();
+    $layoutTemplate = false;
+    if ($contentMenu instanceOf lcContentMenu)
+    {
+        $LayoutRule = array('Match' => array('Section'  => $contentMenu->section(),
+					  	  				 'NodeId'   => $contentMenu->attribute('node_id')),
+		                'Action'   => 'layout.tpl.php');
+        $layoutTemplate = $tplRule->getTemplate($LayoutRule);
+    }
+
+    if (!$layoutTemplate)
+    {
+        $layoutTemplate = $DefaultLayoutTemplate;
+    }
+
+}
+$pageResult = $tpl->fetch($layoutTemplate);
 
 
 $debugOutput = "";

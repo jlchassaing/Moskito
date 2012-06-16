@@ -24,7 +24,7 @@ if ($http->hasPostVariable("addRuleButton"))
         $tpl->setVariable("roleId", $roleId);
         $tpl->setVariable("roleAddPhase", 1);
         $tpl->setVariable("moduleList",$moduleList);
-        $Result['content'] = $tpl->fetch("roles/addrule.tpl.php");
+        $Result['content'] = $tpl->fetch("roles/editrule.tpl.php");
     }
 }
 elseif($http->hasPostVariable("SaveRuleButton"))
@@ -53,7 +53,7 @@ elseif($http->hasPostVariable("SaveRuleButton"))
                     $tpl->setVariable("roleAddPhase", 2);
                     $tpl->setVariable("moduleName",$moduleName);
                     $tpl->setVariable("functionList",array_keys($functionList));
-                    $Result['content'] = $tpl->fetch("roles/addrule.tpl.php");
+                    $Result['content'] = $tpl->fetch("roles/editrule.tpl.php");
                 }
 
             }
@@ -85,7 +85,7 @@ elseif($http->hasPostVariable("SaveRuleButton"))
                          $tpl->setVariable("moduleName",$moduleName);
                          $tpl->setVariable("functionName",$functionName);
                          $tpl->setVariable("functionParams",$functionParams);
-                         $Result['content'] = $tpl->fetch("roles/addrule.tpl.php");
+                         $Result['content'] = $tpl->fetch("roles/editrule.tpl.php");
                      }
                  }
                  else
@@ -96,22 +96,27 @@ elseif($http->hasPostVariable("SaveRuleButton"))
         }
         elseif ($process == 3)
         {
-            $moduleName = $http->postVariable("ModuleNameValue");
+            $moduleName   = $http->postVariable("ModuleNameValue");
             $functionName = $http->postVariable("FunctionNameValue");
             if ($http->hasPostVariable("paramFieldList"))
             {
                 $paramFields = $http->postVariable("paramFieldList");
                 if (is_array($paramFields))
                 {
-                    $parmas = array();
+                    $ruleFunctionParmas = array();
                     foreach($paramFields as $field)
                     {
-                        $type = substr($field, 6);
+                        $type            = substr($field, 6);
                         $paramFieldValue = $http->postVariable($field);
-                        $params[$type] = is_array($paramFieldValue)?implode(';',$paramFieldValue):$paramFieldValue;
+                        $ruleFunctionParmas[$type]   = is_array($paramFieldValue)?$paramFieldValue:array($paramFieldValue);
                     }
                 }
             }
+            if ($http->hasPostVariable("RuleIdValue"))
+            {
+                $ruleId = $http->postVariable("RuleIdValue");
+            }
+
             $saveRule = true;
         }
 
@@ -119,18 +124,25 @@ elseif($http->hasPostVariable("SaveRuleButton"))
 
     if ($saveRule)
     {
-        $ruleParams['role_id'] = $roleId;
-        $ruleParams['module'] = $moduleName;
+        $ruleParams['role_id']  = $roleId;
+        $ruleParams['module']   = $moduleName;
         $ruleParams['function'] = $functionName;
-        $ruleParams['params'] = $params;
+        $ruleParams['params']   = $ruleFunctionParmas;
 
-        $newRule = new lcRule($ruleParams);
-        $newRule->store();
+        if (isset($ruleId))
+        {
+            $editedRule = lcRule::fetchById($ruleId);
+            $editedRule->setAttribute('params',$ruleFunctionParmas);
+        }
+        else
+        {
+            $editedRule = new lcRule($ruleParams);
+        }
+
+        $editedRule->store();
 
         $Module->redirectToModule('role','list');
     }
-
-
 
 }
 elseif($http->hasPostVariable("deleteSelectedRuleButton"))
@@ -155,7 +167,6 @@ elseif($http->hasPostVariable("deleteSelectedRuleButton"))
         lcRule::remove(lcRule::definition(),array('id' => $ruleList,'role_id'=>$roleId));
     }
 
-
 }
 elseif ($http->hasPostVariable("AddNewRole"))
 {
@@ -171,8 +182,5 @@ else
     $Result['content'] = $tpl->fetch("roles/list.tpl.php");
 
 }
-
-
-
 
 ?>

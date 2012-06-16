@@ -46,14 +46,11 @@ class lcImageHandler
     {
         $splitedDate = explode("-",$this->image->attribute('created'));
 
-        $aliasFileName = $this->image->attribute('basename')."_".$alias.".".$this->image->attribute('extension');
+        $aliasFileName = $this->image->attribute('filename')."_".$alias.".".$this->image->attribute('extension');
         $settings = lcSettings::getInstance();
         $storageDir = $settings->value('FileSettings','StorageDir');
         $rootDir = $GLOBALS['SETTINGS']['siteRootDir'];
         $this->aliasImagePath = $this->image->path() ."/". $aliasFileName;
-
-
-
     }
 
     public function aliasExists($alias)

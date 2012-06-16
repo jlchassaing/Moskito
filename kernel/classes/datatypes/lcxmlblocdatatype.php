@@ -72,6 +72,11 @@ class lcXmlblocDataType implements lcDatatypeInterface
 		return (isset($this->value) AND $this->value != "")?true:false;
 	}
 
+public function publish(& $contentObject, & $contentAttribute)
+    {
+
+    }
+
 
 
 }

@@ -21,6 +21,9 @@ $viewList['delete']= array('script'=>'delete.php',
 $viewList['rule']= array('script'=>'rule.php',
 						 'ordered_params'=>array('RuleId'),
                          'function' => 'edit');
+$viewList['ruledit']= array('script'=>'rule.php',
+						 'ordered_params'=>array('RuleId'),
+                         'function' => 'edit');
 
 $functionList = array();
 $functionList['edit'] = array();

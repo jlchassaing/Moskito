@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  * Class to help with file upload
  * @author jlchassaing
  *
@@ -9,15 +9,15 @@
 class lcHttpFile
 {
 	/**
-	 * 
+	 *
 	 * Singelton private static variable
 	 * @var lcHttpFile
 	 */
 	private static $instance;
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * Singleton caller
 	 * @return lcHttpFile
 	 */
@@ -29,12 +29,12 @@ class lcHttpFile
 		}
 		return self::$instance;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Checks if the file included in the HTTP POST Filed name $filedName
 	 * has been correctly uploaded.
-	 * 
+	 *
 	 * If an upload errr has occrued, it will be displayed by the displayUploadError method.
 	 * @param string $fieldName
 	 * @return boolean
@@ -45,7 +45,7 @@ class lcHttpFile
 		{
 			if ($_FILES[$fieldName]['error'] == UPLOAD_ERR_OK)
 			{
-				return true;	
+				return true;
 			}
 			else
 			{
@@ -58,9 +58,9 @@ class lcHttpFile
 			return false;
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Test if the filedName is an uploaded FIle
 	 * @param string $fieldName
 	 * @return boolean
@@ -76,12 +76,12 @@ class lcHttpFile
 			return false;
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Display Error message according to the error Code
 	 * @param int $errorNo
-	 * 
+	 *
 	 */
 	private function dislplayUploadError($errorNo)
 	{
@@ -113,9 +113,9 @@ class lcHttpFile
 			break;
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * return all uploaded file datas : name, type, size
 	 * assuming that befor calling this method, the canUploadFile method has been called
 	 * @param string $fieldName
@@ -128,13 +128,16 @@ class lcHttpFile
 		$aFileInfo['type'] = $_FILES[$fieldName]['type'];
 		$aFileInfo['size'] = $_FILES[$fieldName]['size'];
 		$aFileInfo['tmp_name'] = $_FILES[$fieldName]['tmp_name'];
-		
+		$infos = pathinfo($aFileInfo['name']);
+		$aFileInfo['extension'] = $infos['extension'];
+		$aFileInfo['filename'] = $infos['filename'];
+
 		return $aFileInfo;
-		
+
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }

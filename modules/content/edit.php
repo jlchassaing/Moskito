@@ -78,7 +78,7 @@ else
 	{
 		$contentMenu = lcContentMenu::fetchMenuByObjectId($objectID, $lang);
 
-		$fullMenu = lcContentMenu::fetchMenuTree(1,null,null,true);
+		$fullMenu = lcContentMenu::fetchMenuTree(0,null,null,true);
 		$tpl->setVariable("object", $contentObject);
 		$tpl->setVariable("lang", $lang);
 		$tpl->setVariable("menu", $contentMenu);

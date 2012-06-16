@@ -124,7 +124,7 @@ else
 {
 	if ($view == "manage")
 	{
-		$menuList = lcContentMenu::fetchMenuTree(1,null,null,true);
+		$menuList = lcContentMenu::fetchMenuTree(0,null,null,true);
 		$tpl->setVariable("menu", $menuList);
 		$templateFile = "menu/adminlist.tpl.php";
 	}
