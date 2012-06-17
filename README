@@ -1,7 +1,7 @@
 ****************************************************************************
-*  									   *
+*    								   *
 *			     MOSKITO Lite CMS				   *
-*			       version 0.1				   *
+*			       version 0.6				   *
 *									   *
 *		        author : Jean-Luc Chassaing			   *
 *									   *
@@ -25,3 +25,16 @@ Well this tool has to be simple. A big work will have to be done on the
 back office to make things simple for content editing, creating classes
 and customing content views.
 
+2.2 / Complete
+
+This tool has to hold bè default all the required tool to build a website
+without adding external modules or packages as riche text, image handling
+and editing back offic.
+
+3/ Conclusion
+
+This project is closed. It was a first try. Two website are acutaly running
+with this CMS. 
+
+A new relesase will be added to git hub, it will be a total rebuild of this 
+tool.
