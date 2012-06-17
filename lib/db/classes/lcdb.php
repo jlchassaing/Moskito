@@ -60,7 +60,7 @@ class lcDB
         {
             if ($database !== null)
             {
-
+                
                 if (!mysql_select_db($database,$con))
                 {
                     return false;
@@ -84,7 +84,7 @@ class lcDB
     private function __construct()
     {
         $this->loadDBConf();
-
+        lcDebug::write("notice","Connecting to ".$this->dbConf['database']);
         $this->connection = mysql_pconnect($this->dbConf['host'],$this->dbConf['user'],$this->dbConf['password']);
         if (!$this->connection)
         {
@@ -135,11 +135,12 @@ class lcDB
                     {
                         if (is_numeric($value))
                         {
-                            $res[$key] = (int) $value;
+
+                            $res[$key] =  $value;
                         }
                         else
                         {
-                            $res[$key] = $value;
+                            $res[$key] = stripcslashes($value);
                         }
                     }
 

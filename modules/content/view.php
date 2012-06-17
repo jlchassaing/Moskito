@@ -23,6 +23,8 @@ if (!$lang)
 }
 $tplPath = "default.tpl.php";
 
+$currentRequest = "content/view/".$viewMode."/$nodeID";
+
 if ($viewMode AND $nodeID)
 {
 	$contentObject = lcContentObject::fetchByNodeId((int) $nodeID,$lang);
@@ -34,11 +36,12 @@ if ($viewMode AND $nodeID)
 					  	  				   'NodeId'   => $nodeID),
 		                  'Action'   => 'content/view/'.$viewMode.'.tpl.php');
 
-
 		$cache = lcCache::getInstance();
-		if (($content = $cache->hasValidCacheFile($Params)) !== false)
+
+		if (($content = $cache->hasValidCacheFile($currentRequest)) !== false)
 		{
-		    $result['content'] =  $content;
+		    lcDebug::write("NOTICE", "load $nodeID from cache");
+		    $Result['content'] =  $content;
 		}
 		else
 		{
@@ -51,23 +54,22 @@ if ($viewMode AND $nodeID)
             if (isset($tplPath))
             {
                 $Result['content'] = $tpl->fetch($tplPath);
+
+                $Result['path'] = lcContentMenu::pathArray($nodeID);
             }
-            $cache->makeCacheFile($Params, $Result['content']);
+            lcDebug::write("NOTICE", "build $nodeID from cache");
+            $cache->makeCacheFile($currentRequest, $Result['content'],$tpl->getTemplateData());
 		}
-
-
 	}
 	else
 	{
 		$Result['content'] = $tpl->fetch($tplPath);
 	}
-
 }
 else
 {
 	$Result['content'] = $tpl->fetch($tplPath);
 }
-
 
 
 ?>

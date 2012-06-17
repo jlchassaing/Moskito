@@ -47,15 +47,23 @@ class lcSettings
     */
     function __construct($iniFile = "settings",$loadConf = true)
     {
+        $access = lcAccess::getInstance();
         if ($loadConf)
         {
-            if (isset($GLOBALS['SETTINGS']['currentAccess']))
+           /* if (isset($GLOBALS['SETTINGS']['currentAccess']))
             {
                 $access = $GLOBALS['SETTINGS']['currentAccess'];
             }
+            */
+            $access = $access->access();
             $this->settings = array();
             $conf1 = $this->loadConf("settings/$iniFile.ini");
-            $conf2 = $this->loadConf("settings/accesses/$access/$iniFile.ini");
+            $conf2 = null;
+            if ($access !== false)
+            {
+                $conf2 = $this->loadConf("settings/accesses/$access/$iniFile.ini");
+            }
+
             if (is_array($conf2))
             {
                 $this->settings = array_merge($conf1,$conf2);

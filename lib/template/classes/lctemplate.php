@@ -11,10 +11,13 @@ mange template loading and execution
 class lcTemplate
 {
     private $params;
+    private $templateData;
+
 
     public function __construct()
     {
         $this->params = array();
+        $this->templateData = array();
     }
 
     /*!
@@ -37,16 +40,9 @@ class lcTemplate
             ob_start();
             if (is_array($this->params))
             {
-               /* foreach ($this->params as $name=>$value)
-                {
-                    ${$name}=$value;
-                }*/
+
                 extract($this->params);
             }
-            /*$codeMakeUrl = '$http = lcHTTPTool::getInstance();'.
-             'echo $http->makeUrl($path);';
-            $url = create_function('$path', $codeMakeUrl);
-            */
 
             include $filename;
             $contents = ob_get_contents();
@@ -62,7 +58,6 @@ class lcTemplate
             ob_start();
             if (is_array($params))
             {
-
                 extract($params);
             }
 
@@ -159,6 +154,14 @@ class lcTemplate
         }
     }
 
+    /*
+     * retreive the templateData array
+     */
+    public function getTemplateData()
+    {
+        return $this->templateData;
+    }
+
     /*!
      deals with the methods that are called in the templates
     \param string $methode, the name of the method to execute
@@ -171,7 +174,9 @@ class lcTemplate
         {
             case "url":
                 $http = lcHTTPTool::getInstance();
-                $url = $http->makeUrl($params[0]);
+                $full = isset($params[2])?$params[2]:false;
+
+                $url = $http->makeUrl($params[0],$full);
                 if (isset($params[1]) AND  $params[1] == 'no')
                     return $url;
                 else
@@ -219,7 +224,16 @@ class lcTemplate
                 lcDebug::write('NOTICE', "loading template : $tpl ");
                 if ($tpl)
                 {
-                    echo $this->templateRun($tpl, $paramList);
+                    $cache = lcCache::getInstance();
+                    $params = array('tpl'=> $tpl,
+                                    'paramList' => $paramList);
+                    if (($content = $cache->hasValidCacheFile($params)) == false)
+                    {
+                        $content =  $this->templateRun($tpl, $paramList);
+                        $cache->makeCacheFile($params, $content);
+                    }
+                    echo $content;
+
                 }
                 else
                 {
@@ -236,11 +250,24 @@ class lcTemplate
 
                 break;
             case "require_script":
+
+                if (!isset($this->templateData['required_scripts']))
+                {
+                    $this->templateData['required_scripts'] = array();
+                }
+                $this->templateData['required_scripts'] = array_merge($this->templateData['required_scripts'],$params[0]);
                 $scriptLoader = lcScriptLoader::getInstance();
                 $scriptLoader->required($params[0]);
                 break;
             case "require_style":
+
+                if (!isset($this->templateData['required_styles']))
+                {
+                    $this->templateData['required_styles'] = array();
+                }
+                $this->templateData['required_styles'] = array_merge($this->templateData['required_styles'],$params[0]);
                 $styleLoader = lcStyleLoader::getInstance();
+
                 $styleLoader->required($params[0]);
 
                 break;
@@ -258,6 +285,14 @@ class lcTemplate
                     $result = $module->buildView();
                     echo $result['content'];
                  break;
+            case "rest":
+                $url = $params[0];
+                $operation = $params[1];
+                $request = $params[2];
+                    $result = lcHTTPTool::get($url.'rest/'.$operation.'/'.$request);
+                    
+                    return json_decode($result);
+                break;
             default:
                 echo"call of : $methode ";
             break;

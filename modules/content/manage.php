@@ -4,7 +4,9 @@ $tpl = new lcTemplate();
 
 $DefautlElementsPerPage = 5;
 
-$Offset = (isset($Params['Offset']))?$Params['Offset']:0;
+$http = lcHTTPTool::getInstance();
+
+$Offset = $http->hasGetVariable('offset')?$http->getVariable('offset'):0;
 $NbElements = (isset($Params['Limit']))?$Params['Limit']:$DefautlElementsPerPage;
 
 

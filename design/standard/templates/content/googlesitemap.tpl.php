@@ -3,8 +3,8 @@
 
 <?php foreach ($contentTree as $content):?>
 	<url>
-      <loc><?php $this->url($content['path_string'])?></loc>
+      <loc><?php $this->url($content['path_string'],'full')?></loc>
       <lastmod><?php echo date('Y-m-d',$content['created'])?></lastmod>
- </url>	
+ </url>
 <?php endforeach;?>
 </urlset>

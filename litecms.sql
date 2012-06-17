@@ -1,28 +1,33 @@
--- MySQL dump 10.13  Distrib 5.1.57, for apple-darwin10.7.4 (i386)
+-- phpMyAdmin SQL Dump
+-- version 3.5.1
+-- http://www.phpmyadmin.net
 --
--- Host: localhost    Database: litecmsdb
--- ------------------------------------------------------
--- Server version	5.1.57
+-- Client: localhost
+-- Généré le: Dim 17 Juin 2012 à 10:01
+-- Version du serveur: 5.1.62
+-- Version de PHP: 5.3.10
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `contentmenu`
+-- Base de données: `litecmsdb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `contentmenu`
 --
 
 DROP TABLE IF EXISTS `contentmenu`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `contentmenu` (
+CREATE TABLE IF NOT EXISTS `contentmenu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `node_id` int(11) NOT NULL,
   `contentobject_id` int(11) DEFAULT NULL,
@@ -30,19 +35,50 @@ CREATE TABLE `contentmenu` (
   `path_string` longtext NOT NULL,
   `lang` varchar(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
--- Table structure for table `contentobject_attributes`
+-- Contenu de la table `contentmenu`
+--
+
+INSERT INTO `contentmenu` (`id`, `node_id`, `contentobject_id`, `name`, `path_string`, `lang`) VALUES
+(1, 1, 1, 'Accueil', '/accueil', 'fre-FR'),
+(2, 2, 2, 'Contact', '/accueil/contact', 'fre-FR');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `contentobjects`
+--
+
+DROP TABLE IF EXISTS `contentobjects`;
+CREATE TABLE IF NOT EXISTS `contentobjects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `object_name` varchar(32) NOT NULL,
+  `created` int(11) NOT NULL,
+  `updated` int(11) NOT NULL,
+  `class_identifier` varchar(32) NOT NULL,
+  `node_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `class_identifier` (`class_identifier`,`node_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Contenu de la table `contentobjects`
+--
+
+INSERT INTO `contentobjects` (`id`, `object_name`, `created`, `updated`, `class_identifier`, `node_id`) VALUES
+(1, 'Accueil', 1307482362, 0, 'article', 0),
+(2, 'Contact', 1317283035, 0, 'contact', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `contentobject_attributes`
 --
 
 DROP TABLE IF EXISTS `contentobject_attributes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `contentobject_attributes` (
+CREATE TABLE IF NOT EXISTS `contentobject_attributes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contentobject_id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
@@ -54,83 +90,105 @@ CREATE TABLE `contentobject_attributes` (
   `lang` varchar(6) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `contentobject_id` (`contentobject_id`,`datatype`,`identifier`,`lang`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
 
 --
--- Table structure for table `contentobjects`
+-- Contenu de la table `contentobject_attributes`
 --
 
-DROP TABLE IF EXISTS `contentobjects`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `contentobjects` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `object_name` varchar(32) NOT NULL,
-  `created` int(11) NOT NULL,
-  `updated` int(11) NOT NULL,
-  `class_identifier` varchar(32) NOT NULL,
-  `node_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `class_identifier` (`class_identifier`,`node_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+INSERT INTO `contentobject_attributes` (`id`, `contentobject_id`, `name`, `int_value`, `txt_value`, `ltxt_value`, `datatype`, `identifier`, `lang`) VALUES
+(1, 1, 'Name', 0, 'Accueil', '', 'string', 'name', 'fre-FR'),
+(2, 1, 'Description', 0, '', '<p>Bienvenue dans Moskito Lite CMS.</p>\r\n<p>Ceci est la premi&egrave;re mouture d''un nouveau CMS qui se veut l&eacute;ger tout en respectant des standards de d&eacute;veloppement comme le mod&egrave;le MVC2 et en fournissant par d&eacute;faut tous les outils de base n&eacute;cessaires &agrave; la cr&eacute;ation d''un site web.</p>', 'xmlbloc', 'description', 'fre-FR'),
+(3, 1, 'Image', 0, '', '<?xml version=''1.0''?><file>\n<name>bannière petite2.jpg</name>\n<type>image/jpeg</type>\n<filename>banniere-petite2.jpg</filename>\n<basename>banniere-petite2</basename>\n<extension>jpg</extension>\n<size>275035</size>\n<created>05-09-2011</created>\n</file>\n', 'image', 'image', 'fre-FR'),
+(4, 2, 'Name', 0, 'Contact', '', 'string', 'name', 'fre-FR'),
+(5, 2, 'Nom', 0, '', '', 'string', 'nom', 'fre-FR'),
+(6, 2, 'Prénom', 0, '', '', 'string', 'prenom', 'fre-FR'),
+(7, 2, 'Courriel', 0, '', '', 'string', 'email', 'fre-FR'),
+(8, 2, 'Destinataire', 0, 'contact@atelier-siloe.fr', '', 'string', 'recipient', 'fre-FR'),
+(9, 2, 'Sujet', 0, '', '', 'string', 'subject', 'fre-FR'),
+(10, 2, 'Message', 0, '', '', 'textbloc', 'message', 'fre-FR'),
+(11, 1, 'Titre Sous menu', 0, '', '', 'string', 'subname', 'fre-FR'),
+(12, 1, 'Pièce jointe', 0, '', '', 'file', 'fichier', 'fre-FR'),
+(13, 1, 'Pas dans menu', 0, '', '', 'option', 'not_in_menu', 'fre-FR'),
+(14, 1, 'Menu externe', 0, '', '', 'option', 'external_menu', 'fre-FR');
 
+-- --------------------------------------------------------
 
 --
--- Table structure for table `menu`
+-- Structure de la table `info`
+--
+
+DROP TABLE IF EXISTS `info`;
+CREATE TABLE IF NOT EXISTS `info` (
+  `name` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `info`
+--
+
+INSERT INTO `info` (`name`, `value`) VALUES
+('release', '0.5'),
+('release', '0.5'),
+('release', '0.5');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `menu`
 --
 
 DROP TABLE IF EXISTS `menu`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `menu` (
+CREATE TABLE IF NOT EXISTS `menu` (
   `node_id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_node_id` int(11) NOT NULL,
-  `sort_val` varchar(255) NOT NULL,
+  `sort_val` int(11) NOT NULL,
   `path_ids` varchar(255) NOT NULL,
   `section_id` int(11) NOT NULL,
+  `depth` int(11) NOT NULL,
   PRIMARY KEY (`node_id`),
-  KEY `parent_node_id` (`parent_node_id`),
-  KEY `section_id` (`section_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
+  KEY `parent_node_id` (`parent_node_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
--- Table structure for table `roles`
+-- Contenu de la table `menu`
+--
+
+INSERT INTO `menu` (`node_id`, `parent_node_id`, `sort_val`, `path_ids`, `section_id`, `depth`) VALUES
+(1, 0, 0, '/1/', 1, 0),
+(2, 1, 0, '/1/2/', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `roles`
 --
 
 DROP TABLE IF EXISTS `roles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `roles` (
+CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
--- Dumping data for table `roles`
+-- Contenu de la table `roles`
 --
 
-LOCK TABLES `roles` WRITE;
-/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'admin'),(2,'anonymous');
-/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `roles` (`id`, `name`) VALUES
+(1, 'admin'),
+(2, 'anonymous'),
+(4, 'élève');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `rules`
+-- Structure de la table `rules`
 --
 
 DROP TABLE IF EXISTS `rules`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rules` (
+CREATE TABLE IF NOT EXISTS `rules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) NOT NULL,
   `module` varchar(255) NOT NULL,
@@ -138,78 +196,89 @@ CREATE TABLE `rules` (
   `params` longtext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `role` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 --
--- Dumping data for table `rules`
+-- Contenu de la table `rules`
 --
 
-LOCK TABLES `rules` WRITE;
-/*!40000 ALTER TABLE `rules` DISABLE KEYS */;
-INSERT INTO `rules` VALUES (1,1,'all','all',''),(2,2,'content','read','a:1:{s:7:\"section\";i:1;}');
-/*!40000 ALTER TABLE `rules` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `rules` (`id`, `role_id`, `module`, `function`, `params`) VALUES
+(1, 1, 'all', 'all', ''),
+(14, 2, 'content', 'read', 'a:1:{s:7:"section";i:1;}'),
+(15, 4, 'content', 'read', 'a:1:{s:7:"section";i:2;}'),
+(16, 4, 'content', 'read', 'a:1:{s:7:"section";i:1;}');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `sections`
+-- Structure de la table `sections`
 --
 
 DROP TABLE IF EXISTS `sections`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sections` (
+CREATE TABLE IF NOT EXISTS `sections` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
--- Dumping data for table `sections`
+-- Contenu de la table `sections`
 --
 
-LOCK TABLES `sections` WRITE;
-/*!40000 ALTER TABLE `sections` DISABLE KEYS */;
-INSERT INTO `sections` VALUES (2,'prive'),(1,'standard');
-/*!40000 ALTER TABLE `sections` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `sections` (`id`, `name`) VALUES
+(2, 'prive'),
+(1, 'standard');
 
+-- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Structure de la table `test`
+--
+
+DROP TABLE IF EXISTS `test`;
+CREATE TABLE IF NOT EXISTS `test` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `val` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+
+--
+-- Contenu de la table `test`
+--
+
+INSERT INTO `test` (`id`, `val`) VALUES
+(1, 'test'),
+(3, 'test2'),
+(4, 'test3'),
+(5, 'test3_4'),
+(6, 'test3'),
+(7, 'test3_6');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `login` varchar(30) NOT NULL,
   `password` varchar(32) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
--- Dumping data for table `users`
+-- Contenu de la table `users`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('admin','bab77ccf06f0b1f982e11c60f344c3c2',3,'admin');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+INSERT INTO `users` (`login`, `password`, `id`, `role`) VALUES
+('admin', '725647b89d6ab6e41cb5cdfaf3b72112', 3, 'admin'),
+('nathalie', '74a21b4b03f76eb695eac8fa0c44becd', 4, 'admin'),
+('eleve', '3fb99d1a3846db41157d376c235d729a', 5, 'élève');
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2011-09-17 10:35:14

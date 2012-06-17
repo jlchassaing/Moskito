@@ -12,7 +12,7 @@ for($i = 0; $i <$nbPages; $i++)
     }
     else
     {
-        $pagination .= "<li><a href=\"".$url."/".$poffset."\" >$pageNumber</a></li>\n";
+        $pagination .= "<li><a href=\"".$url."/(offset)/".$poffset."\" >$pageNumber</a></li>\n";
     }
 
 }

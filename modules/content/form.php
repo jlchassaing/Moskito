@@ -33,7 +33,7 @@ if ($http->hasPostVariable("SendFormButton"))
 
         if (!$validCaptcha)
         {
-            $errors['captcha'] = "Captcha error";
+            $errors['captcha'] = "Erreur de vérification du Captcha";
         }
 
         $recipient = $contentObject->attribute('recipient');
@@ -47,7 +47,7 @@ if ($http->hasPostVariable("SendFormButton"))
 
         if (!lcStringTools::isEmail($sender))
         {
-            $errors['email']  = "Sender email error";
+            $errors['email']  = "Mauvais format d'email";
         }
 
         if (count($errors) == 0)
@@ -82,8 +82,10 @@ if ($http->hasPostVariable("SendFormButton"))
             {
                 $classIdentifier = $contentObject->attribute('class_identifier');
                 $templateRule = lcTemplateRule::getInstance();
-                $rulesSet = array('Class'    => $classIdentifier,
-		                  'Action'   => 'content/view.tpl.php');
+                $rulesSet = array('Match' => array('Class'    => $classIdentifier,
+                        'NodeId'   => false),
+                        'Action'   => 'content/view/full.tpl.php');
+                
                 $tplPath = $templateRule->getTemplate($rulesSet);
 
                 if ($tplPath == "")

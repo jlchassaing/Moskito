@@ -49,16 +49,17 @@ $siteHost = $request['host'];
 $requestArray = $request['request'];
 
 $accessManager = lcAccess::getInstance();
-$access = $accessManager->getAccessFromRequestArray($requestArray);
+//$access = $accessManager->getAccessFromRequestArray($requestArray);
+$access = $accessManager->getAccessFromRequestArray($request);
 
 
-if (!$access)
+/*if (!$access)
 {
-	$access = lcSettings::getValue("Default", "access", "settings/settings.ini");
+	$access = lcSettings::getValue("AccessSettings", "Default", "settings/settings.ini");
 }
 else
-{
-	if (count($requestArray) > 0)
+{*/
+	if ($accessManager->accessType == lcAccess::URI)
 	{
 		$requestArray = array_slice($requestArray, 1);
 		$request['request'] = $requestArray;
@@ -68,7 +69,7 @@ else
 			$request['url_alias'] = "/";
 		}
 	}
-}
+//}
 
 $currentAccess = $access;
 $siteSettings = lcSettings::getInstance();
@@ -221,6 +222,10 @@ $tpl->setVariable('MainResult', $ModuleResult['content']);
 
 if (!is_array($contentMenu) and $contentMenu instanceOf lcContentMenu)
 $tpl->setVariable("currentNodeId", $contentMenu->attribute('node_id'));
+if (isset($ModuleResult['path']))
+{
+    $tpl->setVariable("path" , $ModuleResult['path']);
+}
 $DefaultLayoutTemplate = "layout.tpl.php";
 $layoutTemplate = $ModuleResult['layout'];
 if ($layoutTemplate == lcModule::DEFAULT_LAYOUT)
@@ -254,10 +259,11 @@ $debugOutput = lcDebug::output();
 }
 $pageResult = str_replace("<!-- DEBUG -->",$debugOutput,$pageResult);
 
-header('Content-Type:text/html;charset=utf-8');
-
+header('Content-type:text/html;charset=UTF-8');
 
 echo $pageResult;
+
+//include_once 'upgrade.php';
 
 $out = ob_get_clean();
 echo trim($out);

@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 
 
@@ -20,7 +20,7 @@ class lcUpgrader
     public static function getUpgradeListFrom($currentRelease)
     {
         $releaseName = str_replace(".", "-", $currentRelease);
-        $filePattern = "#^upgrade-".$releaseName."-to-[0-9]-[0-9]\.php$#";
+        $filePattern = "#upgrade-".$releaseName."-to-[0-9]{1}-[0-9]{1}\.php#";
         $upgradesList = lcDirTools::dirList(self::UPGRADE_FOLDER, $filePattern);
         return $upgradesList;
     }
@@ -38,3 +38,5 @@ class lcUpgrader
 
     private $upgradeScript;
 }
+
+?>

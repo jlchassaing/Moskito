@@ -64,7 +64,7 @@ class lcScriptLoader
 
         if (is_array($scriptLoader->scripts))
         {
-
+        
             foreach ($scriptLoader->scripts as $script)
             {
 
@@ -81,8 +81,12 @@ class lcScriptLoader
             }
             foreach ($scriptlist as $script)
             {
-                $path = lcDesign::designUrl("javascript"/$script);
-                echo "<script type=\"text/javascript\" src=\"$script\" ></script>\n";
+                $path = lcDesign::designUrl("javascript/".$script);
+                if (!in_array($path, $scriptLoader->scripts))
+                {
+                    echo "<script type=\"text/javascript\" src=\"$path\" ></script>\n";
+                }
+                
 
             }
         }

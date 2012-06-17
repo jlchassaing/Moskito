@@ -8,6 +8,11 @@ $objectID = (isset($Params['ObjectId']))?$Params['ObjectId']:null;
 $lang = (isset($Params['Lang']))?$Params['Lang']:null;
 $Module = $Params['Module'];
 
+if ($http->hasPostVariable("ContentNodeId"))
+{
+    $NodeId = $http->postVariable("ContentNodeId");
+}
+
 if ($http->hasPostVariable("SaveButton"))
 {
 	// editing content
@@ -41,16 +46,20 @@ if ($http->hasPostVariable("SaveButton"))
 			$contentMenuId = $http->postVariable("ContentMenuIdValue");
 
 			$currentContentMenu = lcContentMenu::fetchById($contentMenuId);
+			$menuName = $contentObject->attribute('object_name');
+			$currentContentMenu->updateName($menuName);
+			
+			
 		}
 
-		if ($http->hasPostVariable("MenuParentValue"))
+		/*if ($http->hasPostVariable("MenuParentValue"))
 		{
 			$parentId = $http->postVariable("MenuParentValue");
 			$menuName = "";
 			/*if ($http->hasPostVariable("MenuNameValue"))
 			{
 				$menuName = $http->postVariable("MenuNameValue");
-			}*/
+			}
 			if ($menuName == "")
 			{
 				$menuName = $contentObject->attribute('object_name');
@@ -64,14 +73,31 @@ if ($http->hasPostVariable("SaveButton"))
 				$NewMenu = lcContentMenu::addMenuTo($parentId,$menuName,$contentObject->attribute('id'),$lang);
 			}
 
-		}
+		}*/
 	}
-	$Module->redirectToModule('content','manage');
+	$Module->redirectToModule('content','view',array('full',$NodeId));
 
 
 }
 else
 {
+    if ($http->hasPostVariable("EditButton"))
+    {
+
+        if ($http->hasPostVariable("ObjectIdValue"))
+        {
+            $objectID = $http->postVariable("ObjectIdValue");
+        }
+        if ($http->hasPostVariable("ContentLanguageValue"))
+        {
+            $lang = $http->postVariable("ContentLanguageValue");
+        }
+        else
+        {
+            $lang = null;
+        }
+
+    }
 
 	$contentObject = lcContentObject::fetchById($objectID,$lang);
 	if ($contentObject instanceof lcContentObject)

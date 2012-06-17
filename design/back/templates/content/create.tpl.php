@@ -15,6 +15,7 @@
 <?php endforeach;?>
 
 
+<?php if (!isset($parent_node_id)):?>
 <div class="field">
 Ajouter dans le menu <input type="checkbox" name="AddToAMenu" />
 <label>Parent</label>
@@ -31,7 +32,9 @@ Ajouter dans le menu <input type="checkbox" name="AddToAMenu" />
 
 </select>
 </div>
-
+<?php else:?>
+<input type="hidden" value="<?php echo $parent_node_id?>" name="ParentNodeIDValue" />
+<?php endif;?>
 <?php /*
 <div class="field">
 <label>Nom dans le menu</label>

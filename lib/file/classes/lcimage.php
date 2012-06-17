@@ -22,11 +22,16 @@ class lcImage extends lcFile
 	{
 		return new lcImageHandler($this);
 	}
+	
+	public function rename($newName)
+	{
+	    rename($this->fullPath(), $this->path()."/".$newName);
+	}
 
 	public function remove()
 	{
-		
-		$matchNameString = "/^".$this->attribute('basename')."(_\w+){0,1}\.".$this->attribute('extension')."$/";
+
+		$matchNameString = "/^".$this->attribute('filename')."(_\w+){0,1}\.".$this->attribute('extension')."$/";
 
 		$dir= $this->path();
 
@@ -40,7 +45,7 @@ class lcImage extends lcFile
 							unlink($dir."/".$file);
 						}
 					}
-						
+
 				}
 				closedir($dh);
 			}

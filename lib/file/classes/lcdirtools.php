@@ -23,8 +23,11 @@ class lcDirTools
                     {
                         if ($filePattern !== false)
                         {
-                            if (preg_match($filePattern, $file))
-                             $result[] = $dir.$file;
+                            if(preg_match($filePattern, $file))
+                            {
+                                $result[] = $dir.$file;
+                            }
+
                         }
                         else
                         {

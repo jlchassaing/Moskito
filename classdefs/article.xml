@@ -10,6 +10,12 @@
 <Required>true</Required>
 </Field>
 <Field>
+<Name>Titre Sous menu</Name>
+<Identifier>subname</Identifier>
+<DataType>string</DataType>
+<Required>true</Required>
+</Field>
+<Field>
 <Name>Description</Name>
 <Identifier>description</Identifier>
 <DataType>xmlbloc</DataType>
@@ -19,6 +25,24 @@
 <Name>Image</Name>
 <Identifier>image</Identifier>
 <DataType>image</DataType>
+<Required>false</Required>
+</Field>
+<Field>
+<Name>Pièce jointe</Name>
+<Identifier>fichier</Identifier>
+<DataType>file</DataType>
+<Required>false</Required>
+</Field>
+<Field>
+<Name>Pas dans menu</Name>
+<Identifier>not_in_menu</Identifier>
+<DataType>option</DataType>
+<Required>false</Required>
+</Field>
+<Field>
+<Name>Menu externe</Name>
+<Identifier>external_menu</Identifier>
+<DataType>option</DataType>
 <Required>false</Required>
 </Field>
 </Fields>

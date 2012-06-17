@@ -53,8 +53,19 @@ if ($http->hasPostVariable("CreateButton"))
                 $NewMenu = lcContentMenu::addMenuTo($parentId,$menuName,$newObject->attribute('id'),$lang);
             }
         }
+        elseif ($http->hasPostVariable("ParentNodeIDValue"))
+        {
+            // adding a content from the tree view display
+            $parentId = $http->postVariable("ParentNodeIDValue");
+            $menuName = $newObject->attribute('object_name');
+            $NewMenu = lcContentMenu::addMenuTo($parentId,$menuName,$newObject->attribute('id'),$lang);
+        }
 
-		$Module->redirectToModule('content', 'manage');
+		//$Module->redirectToModule('content', 'manage');
+        $menu = lcMenu::fetchById($NewMenu->attribute('node_id'));
+        $pathArray = $menu->getPathArray();
+        lcCache::purgeCascadingCache($pathArray, 'content/view/full');
+		$Module->redirectToModule('content','view',array('full',$parentId));
 	}
 }
 else
@@ -63,6 +74,12 @@ else
 	$settings = lcSettings::getInstance();
 
 	$lang = (!isset($Params['Lang']) or $Params['Lang']== "")?$settings->value('lang','current'): $Params['Lang'];
+
+	if (lcSession::hasValue("ParentNodeID"))
+	{
+
+	    $tpl->setVariable("parent_node_id",lcSession::value("ParentNodeID"));
+	}
 
 
 	$contentClass = lcContentClass::loadClassDefinition($classID);

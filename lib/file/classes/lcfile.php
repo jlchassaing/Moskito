@@ -44,10 +44,17 @@ class lcFile
 	 */
 	public function hasFile()
 	{
-		if (isset($this->fileInfos) and is_array($this->fileInfos))
-		{
-			return true;
-		}
+	    if (is_array($this->fileInfos))
+	    {
+    	    $fullPath = $this->fullPath();
+            if (isset($this->fileInfos) and file_exists($fullPath))
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
+	    }
 		else
 		{
 			return false;
@@ -103,9 +110,16 @@ class lcFile
 
 	    $filePath = $this->path();
 	    $ext = $this->fileInfos['extension'];
-	    $cleanFileName = "$fileName.$ext";
-	    $index = 1;
-	    while (file_exists($filePath."/".$cleanFileName))
+
+        return self::fixSameName($fileName, $ext, $filePath);
+	}
+
+
+	public static function fixSameName($fileName,$ext,$filePath)
+	{
+        $cleanFileName = "$fileName.$ext";
+        $index = 1;
+        while (file_exists($filePath."/".$cleanFileName))
         {
             $cleanFileName = $fileName."_$index";
             $cleanFileName = "$cleanFileName.$ext";
@@ -113,6 +127,7 @@ class lcFile
         }
         return $cleanFileName;
 	}
+
 
 
 	public function fileName()
@@ -160,24 +175,32 @@ class lcFile
 	    }
 		if (is_array($aFileInfo))
 		{
-			$xmlData = "<?xml version='1.0'?>";
-			$xmlData .= "<file>\n";
-
-			foreach (self::$FIELDS as $fieldName)
-			{
-				if (isset($aFileInfo[$fieldName]))
-				{
-					$xmlData .= "<$fieldName>".$aFileInfo[$fieldName]."</$fieldName>\n";
-					$this->fileInfos[$fieldName] = $aFileInfo[$fieldName];
-				}
-			}
-			$xmlData .= "</file>\n";
-			$this->xmlFileInfo = $xmlData;
+            $this->fileInfos = $aFileInfo;
+			$this->xmlFileInfo = self::buildXmlData($aFileInfo);
 		}
 		else
 		{
 			return false;
 		}
+
+	}
+
+	public static function buildXmlData($dataArray)
+	{
+
+            $xmlData = "<?xml version='1.0'?>";
+            $xmlData .= "<file>\n";
+
+            foreach (self::$FIELDS as $fieldName)
+            {
+                if (isset($dataArray[$fieldName]))
+                {
+                    $xmlData .= "<$fieldName>".$dataArray[$fieldName]."</$fieldName>\n";
+                    $dataArray[$fieldName] = $dataArray[$fieldName];
+                }
+            }
+            $xmlData .= "</file>\n";
+            return  $xmlData;
 
 	}
 

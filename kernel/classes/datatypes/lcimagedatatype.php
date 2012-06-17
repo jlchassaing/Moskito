@@ -59,7 +59,7 @@ class lcImageDataType implements lcDatatypeInterface
 
             $this->value->setFileInfos($fileInfo);
 
-            $this->value->setFileInfos($fileInfo);
+            //$this->value->setFileInfos($fileInfo);
             $contentAttribute->setAttribute('content',$this);
         }
 
@@ -137,9 +137,16 @@ class lcImageDataType implements lcDatatypeInterface
     {
 
         $objectName = $contentObject->attribute('object_name');
+        $oldImages = new lcImage($contentAttribute->attribute('ltxt_value'));
         $fileInfo = $this->value->fileInfo();
         if (isset($fileInfo['tmp_name']))
         {
+            if ($oldImages->hasFile())
+            {
+               $oldImages->remove();
+
+            }
+
             $fileName = lcStringTools::makeNormName($objectName);
             $fileName = $this->value->searchSameName($fileName);
             $this->value->setFileName($fileName);

@@ -86,7 +86,13 @@ class lcContentObjectAttribute extends lcPersistent
 
     public function hasContent()
     {
-        return $this->content->hasContent();
+        if (isset($this->content))
+        {
+            return $this->content->hasContent();
+        }
+
+        else
+            return false;
     }
 
     public static function fetchByObjectId($contentObjectId,$lang)
@@ -126,11 +132,13 @@ class lcContentObjectAttribute extends lcPersistent
 
         }
         $fieldContents = array();
-        foreach ($result as $val)
+        if (isset($result) and is_array($result))
         {
-            $fieldContents[$val['identifier']] = $val;
+            foreach ($result as $val)
+            {
+                $fieldContents[$val['identifier']] = $val;
+            }
         }
-
 
         foreach ($classFieldsDefinition as $fieldId => $field)
         {

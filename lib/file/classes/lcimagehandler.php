@@ -175,5 +175,23 @@ class lcImageHandler
         // copy( $this->getReferenceData( $image, 'resource' ), $this->getReferenceData( $image, 'file' ) );
     }
 
+    public static function remove($contentImage)
+    {
+
+        $fullPath = $contentImage->fullPath();
+        $fullPath = str_replace("\.","_\w+\.",$fullPath);
+
+
+    }
+    
+    /*!
+     * get the image
+     * \return lcImage
+     */
+    public function image()
+    {
+        return $this->image;
+    }
+
 
 }

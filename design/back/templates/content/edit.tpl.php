@@ -17,7 +17,7 @@
 <?php endforeach;?>
 
 
-
+<?php /*
 <?php $parent=0;$path=0; $prec=0;$parentArray=array();$decal = "";?>
 <div class="field">
 Ajouter dans le menu <input type="checkbox" name="AddToAMenu" />
@@ -36,7 +36,7 @@ $decal=""; for ($i=2;$i<count($path);$i++) $decal = $decal."---";?>
 </select>
 </div>
 
-
+*/ ?>
 <?php /* <div class="field">
 <label>Nom dans le menu</label>
 <input type="text" value="<?php if( isset($menu['name'])) echo $menu['name'];?>" name="MenuNameValue" />*/
@@ -49,6 +49,7 @@ if (isset($menu['id'])):?>
 <div class="buttons">
 <input type="hidden" name="ObjectIdValue" value="<?php echo $object->attribute('id');?>" />
 <input type="hidden" name="ContentLanguageValue" value="<?php echo $lang;?>" />
+<input type="hidden" name="ContentNodeId" value="<?php echo $menu['node_id']?>" />
 <input type="submit" name="SaveButton" value="Enregistrer" />
 <input type="button" value="Annuler" />
 </div>

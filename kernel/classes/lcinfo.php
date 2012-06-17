@@ -16,9 +16,14 @@ class lcInfo
         $db = lcDB::getInstance();
         $query = "select * from info";
         $result = $db->arrayQuery($query);
+        $infos = array();
         if (is_array($result) and count($result) > 0)
         {
-            return $result;
+            foreach ($result as $value)
+            {
+                $infos[$value['name']] = $value['value'];
+            }
+            return $infos;
         }
         else
         {
@@ -38,6 +43,14 @@ class lcInfo
         {
             return $info['release'];
         }
+    }
+
+    public static function set($name,$value)
+    {
+        $query = "UPDATE info set value='$value' where name='$name'";
+
+        $db = lcDB::getInstance();
+        $db->query($query);
     }
 
 

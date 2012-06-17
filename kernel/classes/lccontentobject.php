@@ -15,6 +15,8 @@
 class lcContentObject extends lcPersistent
 {
 	private $data_map;
+	private $content_menu;
+	private $menu;
 	protected $object_name;
 	protected $created;
 	protected $updated;
@@ -59,6 +61,110 @@ class lcContentObject extends lcPersistent
 
 		return $object;
 
+	}
+	/*!
+	 * AttributeFilter :
+	 *     array('AND',array('article/name','=','test'))
+	 */
+	public static function fetchList($parentNodeId,$classFilterType = null, $classFilterArray = null, $attributeFilter = null, $sortBy = null,$asObject = false)
+	{
+	    $classfilterQuery = "";
+	    if ($classFilterType !== null )
+	    {
+	        if (is_array($classFilterArray) and count($classFilterArray) > 0)
+	        {
+	            if ($classFilterType == 'include')
+	            {
+	                $classfilterQuery = " AND contentobjects.class_identifier IN (";
+	                $classfilterQuery .= "'".implode("', '",$classFilterArray)."'";
+	                $classfilterQuery .= ") ";
+	            }    
+	        }
+	    }
+	    
+	    $attributeFilterQuery = "";
+	    if (is_array($attributeFilter))
+	    {
+	        $BoulCond = 'AND';
+	        $conds = array();
+	        if (is_string($attributeFilter[0]))
+	        {
+	            if ($attributeFilter[0] == 'AND' or $attributeFilter[0] == 'OR' )
+	            {
+	                $BoulCond = array_shift($attributeFilter);
+	            }
+	          
+	        }
+	        
+	        foreach($attributeFilter as $filter)
+	        {
+	            $attributeNameArray = explode('\\', $filter[0]);
+	            
+	            $contentClass = lcContentClass::getInstance($attributeNameArray[0]);
+	            $def = $contentClass->getFields();
+	            if (isset($def[$attributeNameArray[1]]))
+	            {
+	                $type = $def[$attributeNameArray[1]]['datatype'];
+	                $isString = true;
+	                if ($type == 'xmlbloc')
+	                {
+	                    $valueField = 'ltxt_value';
+	                }
+	                elseif ($type == 'string')
+	                {
+	                    $valueField = 'txt_value';
+	                }
+	                else
+	                {
+	                    $valueField = 'int_value';
+	                    $isString = false;
+	                }
+	               
+	            }
+	            $attributeFilterQuery .= "AND contentobject_attributes.contentobject_id = contentmenu.contentobject_id ";
+	            $attributeFilterQuery .= "AND contentobject_attributes.identifier = '".$attributeNameArray[1]."' ";
+	            $attributeFilterQuery .= "AND contentobject_attributes.$valueField ";
+	            $attributeFilterQuery .= $filter[1];
+	            
+	            $value = str_replace("*", "%", $filter[2]);
+	            if ($isString)
+	                $value = "'$value'";
+	            $attributeFilterQuery .= " $value ";
+	            
+	            
+	        }
+	    }
+	    $query = "SELECT contentobjects.* 
+	              FROM contentobjects, contentobject_attributes, contentmenu, menu 
+	              WHERE menu.parent_node_id = $parentNodeId 
+	                AND contentmenu.node_id = menu.node_id
+	                AND contentobjects.id = contentmenu.contentobject_id ";
+	            
+	    $query .= $classfilterQuery. $attributeFilterQuery;
+	    
+	    $db = lcDB::getInstance();
+	    
+	    $result = $db->arrayQuery($query);
+	    
+	    if (is_array($result))
+	    {
+	        if ($asObject)
+	        {
+	            $return = array();
+	            foreach ($result as $value) 
+	            {
+	                $return[] = new self($value);
+	               
+	            }
+	            $result = $return;
+	        }
+	        return $result;
+	    }
+	    else
+	    {
+	        return null;    
+	    }
+	    
 	}
 
 	/*!
@@ -153,7 +259,22 @@ class lcContentObject extends lcPersistent
 			$this->lang = $GLOBALS['SETTINGS']['currentLanguage'];
 		}
 		$this->loadDataMap();
+		$this->fetchMenu();
 
+	}
+	
+	
+	public function parent()
+	{
+	    $db = lcDB::getInstance();
+	    $objID = $this->attribute('id');
+	    $query = "SELECT contentobjects.* FROM `contentobjects`, contentmenu, menu 
+                  WHERE menu.node_id = (select contentmenu.node_id FROM contentmenu WHERE contentobject_id = $objID)
+                    AND contentmenu.node_id = menu.parent_node_id
+                    AND contentobjects.id = contentmenu.contentobject_id";
+	    $res = $db->arrayQuery($query);
+	    
+	    return new self($res[0]);
 	}
 
 
@@ -201,12 +322,12 @@ class lcContentObject extends lcPersistent
 		if (!isset($this->$name))
 		{
 
-			$this->$name = (is_numeric($value))?(int) $value:$value;
+			$this->$name = (is_numeric($value))?(int) $value:stripcslashes($value);
 			return true;
 		}
 		elseif(isset($this->data_map[$name]))
 		{
-			$this->data_map[$name]['value'] = (is_numeric($value))?(int) $value:$value;
+			$this->data_map[$name]['value'] = (is_numeric($value))?(int) $value:stripcslashes($value);
 			return true;
 		}
 		return false;
@@ -235,13 +356,18 @@ class lcContentObject extends lcPersistent
 			$field = $this->attribute($namingRule);
 			/*
 			 $this->object_name =  $this->makeNormName($field);
-			 */
+
             $index = 1;
             while ($this->nameExists($field))
             {
-                $field .= "_". $index;
+                if (preg_match("#(\w+)(_[0-9])+#", $field,$res))
+                {
+                    $field = $res[1]."_".$index;
+                }
+                //$field .= "_". $index;
                 $index++;
             }
+            */
 			$this->object_name =  $field;
 		}
 		return $this->object_name;
@@ -249,7 +375,9 @@ class lcContentObject extends lcPersistent
 
 	}
 
-	public function nameExists($name)
+	/*
+	 * removed in release 0.4
+	 public function nameExists($name)
 	{
 	    $db = lcDB::getInstance();
 	    $idCond = "";
@@ -268,6 +396,7 @@ class lcContentObject extends lcPersistent
 	        return false;
 	    }
 	}
+	*/
 
 	/*!
 	  retuns the object urlAlias
@@ -290,6 +419,24 @@ class lcContentObject extends lcPersistent
 		$url = lcHTTPTool::buildUrl($path);
 		return $url;
 	}
+
+
+	public function fetchMenu()
+	{
+	    $contentMenu = lcContentMenu::fetchByObjectId($this->attribute('id'),$this->lang,true);
+	    if ($contentMenu instanceof lcContentMenu)
+	    {
+	       $this->content_menu = $contentMenu;
+           $this->menu = lcMenu::fetchById($this->content_menu->attribute('node_id'),true);
+
+	    }
+
+	}
+
+
+
+
+
 
 
     /*!

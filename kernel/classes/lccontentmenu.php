@@ -93,6 +93,8 @@ class lcContentMenu extends lcPersistent
 				 "AND contentobjects.id = contentmenu.contentobject_id ".
         $nodeCond .
 			     "ORDER BY menu.sort_val ";
+
+
         return $db->arrayQuery($query);
     }
 
@@ -111,10 +113,10 @@ class lcContentMenu extends lcPersistent
         $nodeCond = self::getNodeDepthCond($nodeId,$depth);
 
 
-        $query = "SELECT contentmenu.*, menu.parent_node_id FROM contentobjects, contentmenu, menu WHERE
+        $query = "SELECT contentmenu.*, menu.parent_node_id, menu.depth FROM contentobjects, contentmenu, menu WHERE
     			  contentobjects.id = contentmenu.contentobject_id
     			  AND contentmenu.node_id = menu.node_id $classfilterString  $nodeCond
-    			  ORDER BY menu.sort_val ASC";
+    			  ORDER BY contentmenu.path_string ASC";
 
 
         $result = $db->arrayQuery($query);
@@ -129,6 +131,41 @@ class lcContentMenu extends lcPersistent
             }
         }
         return $result;
+    }
+
+    /**!
+     *
+     * fetch the contentMenuTree to build a tree ordered by path_string
+     * This is mainely used to build a tree of content for the left menu in admin
+     */
+    public static function fetchFullMenu($parentNodeId, $depth = 1, $fetchOnlyObjectsWithChildrens = true)
+    {
+        $db = lcDB::getInstance();
+        $query = "select depth, path_ids FROM menu  WHERE node_id = $parentNodeId";
+        $res = $db->arrayQuery($query);
+        if (isset($res[0]))
+        {
+            $parent = $res[0];
+        }
+
+        $parentNodeFilterSqlCondition = " ";
+        if ($fetchOnlyObjectsWithChildrens)
+        {
+            $parentNodeFilterSqlCondition = "AND (select count(m2.node_id) FROM menu as m2 WHERE m2.parent_node_id = m.node_id ) > 0 ";
+        }
+
+        $searchDepth = $parent['depth'] + $depth;
+
+        $parentSqlCondition = "AND m.path_ids like '".$parent['path_ids']."%' ";
+        $depthSqlCondition = "AND m.depth >= {$parent['depth']} AND m.depth <= $searchDepth ";
+        $orderSqlCondition = "ORDER BY path_string";
+        $query = "SELECT * FROM contentmenu, menu as m WHERE
+                  contentmenu.node_id = m.node_id ";
+         $query = $query . $parentSqlCondition . $depthSqlCondition . $parentNodeFilterSqlCondition. $orderSqlCondition ;
+
+        $res = $db->arrayQuery($query);
+        return $res;
+
     }
 
     public static function getNodeDepthCond($nodeId,$depth,$getParent = false)
@@ -228,6 +265,31 @@ class lcContentMenu extends lcPersistent
         return $db->arrayQuery($query);
     }
 
+    /*!
+     *
+     * Build the path array of a node
+     *
+     * the returned array is  an array of each element of the path
+     * each one is set as an associative array of the node_id, the name and the path_string
+     *
+     * \param interger $node_id
+     * \return array
+     */
+    public static function pathArray($node_id)
+    {
+        $db = lcDB::getInstance();
+
+        $query = "SELECT path_ids FROM menu WHERE node_id = $node_id";
+        $res = $db->arrayQuery($query);
+        $pathIdList = str_replace("/",",", substr($res[0]['path_ids'],1,-1));
+        $query = "SELECT node_id, name, path_string
+                  FROM contentmenu
+                  WHERE node_id in ($pathIdList)
+                  ORDER BY path_string";
+         $res = $db->arrayQuery($query);
+
+         return $res;
+    }
 
     /*!
 
@@ -250,7 +312,7 @@ class lcContentMenu extends lcPersistent
             $nodeIndex = array_search($this->node_id,$pathIds);
             $pathString = explode("/",$value['path_string']);
             $pathString[$nodeIndex] = $pathName;
-            $newPathString = implode("/", $pathString);
+            $newPathString = self::buildUrlAlias(implode("/", $pathString));
             $query = "UPDATE ".$this->definition['tableName'].
 					 " SET path_string='$newPathString' ".
 					 "WHERE id = ".$value['id'];
@@ -324,7 +386,10 @@ class lcContentMenu extends lcPersistent
     {
         $cond = array('path_string'=>$path,
 					  'lang' => $lang);
-        return self::fetch(self::definition(),$cond,null,null,null,$asObject);
+        $result = self::fetch(self::definition(),$cond,null,null,null,$asObject);
+
+        return $result;
+
     }
 
     /*!
@@ -335,12 +400,12 @@ class lcContentMenu extends lcPersistent
     */
     public static function removeMenu($nodeId)
     {
-        if (!lcMenu::hasChildren($nodeId))
-        {
+       // if (!lcMenu::hasChildren($nodeId))
+       // {
             $cond = array('node_id' => $nodeId);
             lcMenu::remove(lcMenu::definition(),$cond);
             lcContentMenu::remove(self::definition(),$cond);
-        }
+       // }
 
     }
 
@@ -369,7 +434,28 @@ class lcContentMenu extends lcPersistent
             {
                 $filter = $filter . " AND ";
             }
-            $filter .= (is_string($value))?"$key='$value'":"$key=$value";
+            if (is_string($value))
+            {
+                $value = "='$value'";
+            }
+            elseif (is_array($value))
+            {
+                $condString = " IN (";
+                if (!is_numeric($value[0]))
+                {
+                    $condString .= "'".implode("','", $value)."')";
+                }
+                else
+                {
+                    $condString .= implode(",", $value).")";
+                }
+                $value = $condString;
+            }
+            else
+            {
+                $value = "=$value";
+            }
+            $filter .= $key.$value;
         }
 
         $filter .= " AND menu.node_id = contentmenu.node_id";
@@ -435,9 +521,44 @@ class lcContentMenu extends lcPersistent
 
         $newContentMenu = new lcContentMenu($rowNewContentArray);
         $cleanName = $newContentMenu->makeNormName($name);
-        $newPath = $parentPathString."/".$cleanName;
+        $newPath = self::buildUrlAlias($parentPathString."/".$cleanName);
         $newContentMenu->setAttribute('path_string', $newPath);
         $newContentMenu->store();
+        return $newContentMenu;
+    }
+
+    /*!
+     * build the url alias based on the given path
+     * this method adds an integer at the end of the path like name_1
+     * \param string $path
+     * \return string
+     */
+    public static function buildUrlAlias($path)
+    {
+        $index = 1;
+        $searchedURl = $path;
+        while (self::aliasExists($searchedURl))
+        {
+            $searchedURl = $path . "_".$index;
+            $index++;
+        }
+        return $searchedURl;
+    }
+
+    /*!
+     * Search if the given path exists as an url alias
+     * \param string $path
+     * \return boolean
+     */
+    public static function aliasExists($path)
+    {
+        $query = "SELECT count(*) as nb FROM contentmenu WHERE path_string = '$path'";
+        $db = lcDB::getInstance();
+        $res = $db->arrayQuery($query);
+        if ($res[0]['nb'] > 0)
+            return true;
+        else
+            return false;
     }
 
     /*
@@ -449,6 +570,22 @@ class lcContentMenu extends lcPersistent
         $menu = lcMenu::fetchById($this->attribute('node_id'),false);
         return $menu['section_id'];
 
+    }
+    
+    public function updateName($name)
+    {
+        $this->setAttribute('name', $name);
+        
+        /*$cleanName = $this->makeNormName($name);
+        $oldPath = explode('/',$this->attribute('path_string'));
+        $nb = count($oldPath);
+        $oldPath[$nb - 1] =  $cleanName;
+        $newPath = implode('/',$oldPath);
+        $this->setAttribute('path_string', $newPath);*/
+       $this->store();
+       $this->updatePaths($this->node_id);
+        
+        
     }
 
     /*!
@@ -508,7 +645,7 @@ class lcContentMenu extends lcPersistent
             $node->setAttribute('path_string',$newPathString);
             $node->store();
 
-            $query = "SELECT * from contentmenu WHERE path_string like '$oldPathString%'";
+            $query = "SELECT * from contentmenu WHERE path_string like '$oldPathString%' and node_id !=".$node->attribute('node_id');
             $pathLenght = strlen($oldPathString);
             $childrens = $db->arrayQuery($query);
             foreach ($childrens as $children)
@@ -580,6 +717,76 @@ class lcContentMenu extends lcPersistent
         }
 
     }
+    
+    public function MoveToNode($newParentNodeId)
+    {
+        $db = lcDB::getInstance();
+        $db->begin();
+        
+        // fetch parent content menu
+        $parentContentMenu = self::fetchByNodeId($newParentNodeId);
+        $pathString = $parentContentMenu->attribute('path_string');
+        // set new path_string value
+        $currentPathArray = array_reverse(explode('/',$this->attribute('path_string')));
+        $currentNodeId = $this->attribute('node_id');
+        $newPath_string = $pathString."/".$currentPathArray[0];
+        $this->setAttribute('path_string', $newPath_string);
+        $this->store();
+        
+        // update menu path_ids, depth and parent
+        $currentMenu = lcMenu::fetchById($this->attribute('node_id'));
+        $parentMenu = lcMenu::fetchById($newParentNodeId);
+        $parentPathIds = $parentMenu->attribute('path_ids');
+        $parentDepth = $parentMenu->attribute('depth');
+        $newPathIds = $parentPathIds.$currentNodeId."/";
+        $newDepth = $parentDepth + 1;
+        
+        $currentMenu->setAttribute('path_ids',$newPathIds);
+        $currentMenu->setAttribute('depth',$newDepth);
+        $currentMenu->setAttribute('parent_node_id',$newParentNodeId);
+        $currentMenu->store();
+        
+        self::recursiveUpdateChildrens($currentNodeId);
+         
+        $db->commit();
+    }
+    
+    public static function recursiveUpdateChildrens($nodeId)
+    {
+        if (lcMenu::hasChildren($nodeId))
+        {
+            $childrens = lcMenu::fetchChildrens($nodeId);
+            
+            $parentNodeMenu = lcMenu::fetchById($nodeId);
+            $parentContentMenu = lcContentMenu::fetchByNodeId($nodeId);
+            $parentPathString = $parentContentMenu->attribute('path_string');
+            $parentContentMenu = lcContentMenu::fetchByNodeId($nodeId);
+            $parentPathIds = $parentNodeMenu->attribute('path_ids');
+            $parentDepth = $parentNodeMenu->attribute('depth');
+            
+            foreach ($childrens as $childMenu)
+            {
+                $childNode_id = $childMenu->attribute('node_id');
+                $newChildPath_ids = $parentPathIds.$childNode_id."/";
+                $newChildDepth = $parentDepth+1;
+                $childMenu->setAttribute('path_ids',$newChildPath_ids);
+                $childMenu->setAttribute('depth',$newChildDepth);
+                $childMenu->store();
+                
+                $childContentMenu = self::fetchByNodeId($childNode_id);
+                $childPathArray = array_reverse(explode('/',$childContentMenu->attribute('path_string')));
+                $childPath_string = $parentPathString."/".$childPathArray[0];
+                $childContentMenu->setAttribute('path_string', $childPath_string);
+                $childContentMenu->store();
+                
+                if (lcMenu::hasChildren($childNode_id))
+                {
+                    self::recursiveUpdateChildrens($childNode_id);
+                }
+                
+            }
+        }
+    }
 
     public static function hasSection($section_id,$nodeId)
     {
@@ -596,9 +803,8 @@ class lcContentMenu extends lcPersistent
     protected $id;
     protected $node_id;
     protected $contentobject_id;
+    protected $path_string;
     protected $name;
     protected $lang;
-
-
 
 }

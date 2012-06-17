@@ -89,6 +89,7 @@ class lcContentClass
 	public static function loadClassDefinition($classIdentifier)
 	{
 		$classDefPath = "classdefs/".$classIdentifier.".xml";
+		$classDef = null;
 		if (file_exists($classDefPath))
 		{
 			$dom = new DOMDocument( '1.0', 'utf-8' );

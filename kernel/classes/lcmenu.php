@@ -36,9 +36,10 @@ class lcMenu extends lcPersistent
                      'className' => 'lcMenu',
                      'fields'    => array('node_id'         => array('type' => 'integer'),
                                           'parent_node_id'  => array('type' => 'integer'),
-                                          'sort_val'        => array('type' => 'string'),
+                                          'sort_val'        => array('type' => 'integer'),
                                           'path_ids'        => array('type' => 'string'),
-                                          'section_id'      => array('type' => 'integer')
+                                          'section_id'      => array('type' => 'integer'),
+                                          'depth'           => array('type' => 'string')
         ),
                      'key' => 'node_id'
                      );
@@ -120,8 +121,20 @@ class lcMenu extends lcPersistent
         $cond = array('node_id'=>$menuId);
         return self::fetch(self::definition(),$cond,null,null,null,$asObject);
     }
+    
+    public static function fetchChildrens($node_id, $asObject = true)
+    {
+        $cond = array('parent_node_id' => $node_id);
+        return self::fetch(self::definition(),$cond,null,null,null,$asObject);
+    }
 
 
+    public function getPathArray()
+    {
+        $temp = explode("/", substr($this->attribute("path_ids"),1,-1));
+        return $temp;
+
+    }
 
     public static function addTo($parent)
     {
@@ -162,6 +175,7 @@ class lcMenu extends lcPersistent
         $node->setAttribute('node_id', $nodeId);
         $newPath = $parentPathIds . $nodeId ."/";
         $node->setAttribute("path_ids", $newPath);
+        $node->setDepth();
         $node->store();
         return $node;
 
@@ -206,6 +220,29 @@ class lcMenu extends lcPersistent
         return ($parentSortVal != "")?$parentSortVal."/".$newSortValue:$newSortValue;
     }
 
+    /*!
+     * build the depth value based on the path_ids value
+     * \param array $pathIds
+     * \return integer
+     */
+    public static function getDepthFromPathIds($pathIds)
+    {
+        $t = explode("/",$pathIds);
+        $depth = count($t) - 3;
+        $depth_val = " depth = $depth";
+        return $depth;
+    }
+
+    /*!
+     * set the current depth
+     */
+    public function setDepth()
+    {
+        $pathIds = $this->attribute('path_ids');
+        $depthValue = self::getDepthFromPathIds($pathIds);
+        $this->setAttribute('depth', $depthValue);
+    }
+
 
     public function setNewParent($parent)
     {
@@ -223,15 +260,12 @@ class lcMenu extends lcPersistent
         $this->path_ids = $newPathId;
         $this->parent_node_id = $parent;
         $this->section_id = $section_id;
+        $this->setDepth();
 
         // update sort val
 
-        $oldSortVal = $this->sort_val;
-        if ($oldSortVal == 0)
-        {
-            $oldSortVal = "00";
-        }
-        $this->sort_val = self::getSortVal($newParent);
+
+        $this->sort_val = 0;
 
         $this->store();
 
@@ -241,17 +275,20 @@ class lcMenu extends lcPersistent
         $db = lcDB::getInstance();
         $db->begin();
         $pathLenght = strlen($oldPathId);
-        $sortLength = strlen($oldSortVal);
+       // $sortLength = strlen($oldSortVal);
         foreach ($childrenNodes as $children)
         {
             //$pathLenght = strlen($oldPathId);
             $pathLastIds = substr($children['path_ids'], $pathLenght);
             $newChildrenPath = $newPathId.$pathLastIds;
-            $lastSortValue = substr($children['sort_val'], $sortLength);
-            $newChildrenSortVal=$this->sort_val.$lastSortValue;
+            /*
+
+             $lastSortValue = substr($children['sort_val'], $sortLength);
+            $newChildrenSortVal=$this->sort_val.$lastSortValue;*/
+            $newDepth = self::getDepthFromPathIds($newChildrenPath);
 
             $query = "UPDATE ".$this->definition['tableName'] ." SET ".
-                     "path_ids = '$newChildrenPath', sort_val='$newChildrenSortVal',section_id=$section_id WHERE ".
+                     "path_ids = '$newChildrenPath', depth= $newDepth, section_id=$section_id WHERE ".
                      "node_id = ".$children['node_id'];
             $db->query($query);
         }
@@ -276,6 +313,7 @@ class lcMenu extends lcPersistent
     protected $name;
     protected $sort_val;
     protected $path_ids;
+    protected $depth;
 
 
 

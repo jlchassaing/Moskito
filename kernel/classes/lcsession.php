@@ -13,6 +13,17 @@ class lcSession
 
 
     private static $hasStarted;
+    private static $instance;
+    private $sessionHasStarted;
+    
+    public static function instance()
+    {
+        if (! self::$instance instanceOf lcSession)
+        {
+            self::$instance = new lcSession();
+            
+        }
+    }
 
 
     /*!
@@ -20,7 +31,22 @@ class lcSession
      */
     public function __construct()
     {
-
+        $this->sessionHasStarted = self::$hasStarted;
+    }
+    
+    public function hasVariable($name)
+    {
+        return self::hasValue($name);
+    }
+    
+    public function variable($name)
+    {
+        return self::value($name);
+    }
+    
+    public function setVariable($name,$value)
+    {
+        self::setValue($name, $value);
     }
 
     public static function start()

@@ -1,60 +1,8 @@
 <?php
 
-class UpgradeScriptIterator implements Iterator
-{
-    protected $current;
-
-    protected $operationList;
-
-    protected $operationResult;
-
-    protected $currentStep;
-
-    function __construct()
-    {
-        $this->operationList = $this->init();
-        $this->current = 0;
-    }
-
-    function rewind()
-    {
-        $this->current = 0;
-    }
-
-    function current()
-    {
-
-        return $this->operationList[$this->current];
-    }
-
-    function key()
-    {
-        return $this->current;
-    }
-
-    function next()
-    {
-        ++$this->current;
-    }
-
-    function valid()
-    {
-
-        return isset($this->operationList[$this->current]);
-    }
-
-    function run()
-    {
-        foreach ($this as $key=>$item)
-        {
-            $this->operationResult[$item['name']] = $this->$item['method']();
-        }
-        return $this->operationResult;
-    }
-}
-
 class UpgradeScript extends UpgradeScriptIterator
 {
+    const UPGRADE_FROM_RELEASE = "0.1";
 
     function init()
     {

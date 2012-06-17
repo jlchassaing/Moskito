@@ -37,8 +37,6 @@ class lcContentNodeObjectHandler
         	                  "AND CHAR_LENGTH(menu.sort_val) <= $sortValLenght ";
         }
 
-
-
         $query    = "SELECT contentobjects.id,contentobjects.object_name,contentobjects.created,contentobjects.updated,contentobjects.class_identifier,contentmenu.node_id ".
                  	"FROM contentmenu, menu, contentobjects ";
 
@@ -56,17 +54,27 @@ class lcContentNodeObjectHandler
             }
             elseif (count($class_filter) > 1)
             {
-                $class_filter = "AND contentojbects.class_identifier in ('".implode("','",$class_filter)."') ";
+                $classFilterCond = "AND contentobjects.class_identifier in ('".implode("','",$class_filter)."') ";
             }
 
         }
 
         if (is_array($sorting))
         {
-           $sortingCond = " ORDER BY contentobjects.".$sorting[0];
-           if (!$sorting[1])
+           switch ($sorting[0])
            {
-               $sortingCond = $sortingCond ."DESC";
+               case 'priority':
+                $sortingCond = " ORDER BY menu.sort_val ";
+               break;
+
+               default:
+                   $sortingCond = " ORDER BY contentobjects.".$sorting[0];
+               break;
+           }
+
+           if (isset($sorting[1]) AND !$sorting[1])
+           {
+               $sortingCond = $sortingCond ." DESC";
            }
         }
 
@@ -94,6 +102,56 @@ class lcContentNodeObjectHandler
             }
         }
         return $returnResult;
+    }
+
+    public static function fetchCountChildrens($parent_node_id,$class_filter = null, $language = null)
+    {
+        $classFilterCond = "";
+        $settings = lcSettings::getInstance();
+         $language = ($language === null)?$settings->value('lang', 'current'):$language;
+
+        if (is_array($class_filter))
+        {
+            if (count($class_filter) == 1)
+            {
+                $classFilterCond = "AND contentobjects.class_identifier = '".$class_filter[0]."' ";
+            }
+            elseif (count($class_filter) > 1)
+            {
+                $class_filter = "AND contentojbects.class_identifier in ('".implode("','",$class_filter)."') ";
+            }
+        }
+
+        $query = "SELECT count(menu.node_id) as cte ";
+        $QueryFROM = "FROM contentmenu, menu, contentobjects ";
+        $QueryWheres = "WHERE menu.parent_node_id = $parent_node_id
+                           AND contentmenu.node_id = menu.node_id
+                           AND contentmenu.lang = '$language'
+                           AND contentobjects.id = contentmenu.contentobject_id ";
+
+        $db = lcDB::getInstance();
+        $query = $query . $QueryFROM . $QueryWheres;
+        $res = $db->arrayQuery($query);
+
+        return $res[0]['cte'];
+    }
+
+    public static function removeObject($objectId)
+    {
+        $menuList = lcContentMenu::fetchMenuByObjectId($objectId,null,true,true);
+        $childrens = lcContentNodeObjectHandler::fetchChildrens($menuList['node_id']);
+        foreach ($menuList as $menu)
+        {
+            $object = lcContentObject::fetchByNodeId($menu['node_id'],$menu['lang'],true);
+
+            $object->removeObject();
+            lcContentMenu::removeMenu($menu['node_id']);
+
+        }
+        foreach ($childrens as $item)
+        {
+            self::removeObject($item->attribute('id'));
+        }
     }
 
 }

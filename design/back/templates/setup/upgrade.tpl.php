@@ -4,9 +4,10 @@
 <div class="tl"><div class="tr"><div class="tc"><h2 class="blocktitle">Setup - upgrade</h2></div></div></div>
 <div class="ml"><div class="mr"><div class="mc">
 
-<div class="table-content">
 
-<?php if (is_array($scripts)):?>
+
+<?php if (is_array($scripts) and count($scripts) > 0 ):?>
+<div class="table-content">
 <table>
 <tr>
 <th class="small first">
@@ -23,6 +24,9 @@ Actions
 </tr>
 <?php endforeach;?>
 </table>
+<?php else:?>
+<div class="content">
+<p>Aucun script de mise à jour pour la version courante : version <?php echo $release;?></p>
 <?php endif;?>
 </div>
 

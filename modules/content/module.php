@@ -29,6 +29,14 @@ $viewList['select']= array('script'=>'select.php',
                          'function' => 'select');
 $viewList['form']= array('script'=>'form.php');
 
+$viewList['move']= array('script'=>'move.php',
+                         'ordered_params'=>array('NodeId'),
+                         'function' => 'move');
+
+$viewList['browse'] = array('script' => 'browse.php',
+                            'function' => 'browse',
+                            'ordered_params'=>array("NodeId"));
+
 $functionList = array();
 $functionList['read'] = array('section' => array('lcSection','getList','id','name'));
 $functionList['edit'] = array();
